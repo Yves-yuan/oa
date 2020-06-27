@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.linter.oasys.mapper.FileMapper">
+    <resultMap id="FileResultMap" type="File">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="path" column="path"/>
+        <result property="type" column="type"/>
+        <result property="size" column="size"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="personal" column="personal"/>
+        <result property="createTime" column="create_time"/>
+        <association property="user" javaType="User">
+            <id property="id" column="user_id"/>
+            <result property="username" column="username"/>
+        </association>
+    </resultMap>
+
+    <insert id="insertFile">
+        insert into file(name, path, type, size, user_id, parent_id, personal, create_time)
+        values (#{name}, #{path}, #{type}, #{size}, #{user.id}, #{parentId}, #{personal}, #{createTime})
+    </insert>
+
+    <update id="updateFile">
+        update file set name = #{newName}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFile">
+        delete from file where id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectFile" resultMap="FileResultMap">
+        select * from file
+        where id = #{id}
+    </select>
+
+    <select id="selectFiles" resultMap="FileResultMap">
+        select file.*, user.id, user.username
+        from file, user
+        where file.user_id = user.id
+          and file.parent_id = #{parentId}
+          and file.personal = #{personal}
+        <if test="personal == true">
+            and file.user_id = #{userId}
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.linter.oasys.mapper.FlightMapper">
+    <resultMap id="FlightResultMap" type="Flight">
+        <id property="id" column="id"/>
+        <result property="flightCompanyName" column="flightCompanyName"/>
+        <result property="flightNo" column="flightNo"/>
+        <result property="cityFromName" column="cityFromName"/>
+        <result property="depInfo" column="depInfo"/>
+        <result property="depDate" column="depDate"/>
+        <result property="depTime" column="depTime"/>
+        <result property="cityToName" column="cityToName"/>
+        <result property="flightStatus" column="flightStatus"/>
+        <result property="arrInfo" column="arrInfo"/>
+        <result property="arrTime" column="arrTime"/>
+        <result property="price" column="price"/>
+        <result property="punctualRate" column="punctualRate"/>
+    </resultMap>
+
+    <insert id="insertFlightList" parameterType="java.util.List">
+        insert into flight (flightCompanyName,flightNo,cityFromName,depInfo,depDate,depTime,
+        cityToName,flightStatus,arrInfo,arrTime,price,punctualRate)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.flightCompanyName},#{item.flightNo},#{item.cityFromName},
+            #{item.depInfo},#{item.depDate},#{item.depTime},#{item.cityToName},
+            #{item.flightStatus},#{item.arrInfo},#{item.arrTime},#{item.price},#{item.punctualRate})
+        </foreach>
+    </insert>
+    <insert id="insertFlight" parameterType="Flight">
+        insert into flight (flightCompanyName,flightNo,cityFromName,depInfo,depDate,depTime,
+        cityToName,flightStatus,arrInfo,arrTime,price,punctualRate)
+        values (#{flightCompanyName},#{flightNo},#{cityFromName},#{depInfo},#{depDate},
+        #{depTime},#{cityToName},#{flightStatus},#{arrInfo},#{arrTime},#{price},#{punctualRate})
+    </insert>
+
+    <update id="updateFlight">
+        update flight
+        <trim prefix="set" suffixOverrides=",">
+            <if test="flightCompanyName != null">flightCompanyName=#{flightCompanyName},</if>
+            <if test="flightNo != null">flightNo=#{flightNo},</if>
+            <if test="cityFromName != null">cityFromName=#{cityFromName},</if>
+            <if test="depInfo != null">depInfo=#{depInfo},</if>
+            <if test="depDate != null">depDate=#{depDate},</if>
+            <if test="depTime != null">depTime=#{depTime},</if>
+            <if test="cityToName != null">cityToName=#{cityToName},</if>
+            <if test="flightStatus != null">flightStatus=#{flightStatus},</if>
+            <if test="arrInfo != null">arrInfo=#{arrInfo},</if>
+            <if test="arrTime != null">arrTime=#{arrTime},</if>
+            <if test="price != null">price=#{price},</if>
+            <if test="punctualRate != null">punctualRate=#{punctualRate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFlight">
+        delete from flight where id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+
+
+    <select id="selectFlight"  parameterType="hashmap" resultMap="FlightResultMap">
+        select *
+        from flight
+        where 1=1
+        <if test="cityFromName != null and cityFromName != ''">
+            and (locate(#{cityFromName},cityFromName)>0 or locate(cityFromName,#{cityFromName})>0)
+        </if>
+        <if test="cityToName != null and cityToName != ''">
+            and (locate(#{cityToName},cityToName)>0 or locate(cityToName,#{cityToName})>0)
+        </if>
+        <if test="flightCompanyName != null and flightCompanyName != ''">
+            and (locate(#{flightCompanyName},flightCompanyName)>0 or locate(flightCompanyName,#{flightCompanyName})>0)
+        </if>
+        <if test="depDate != null and depDate != ''">
+            and TO_DAYS(depDate)=TO_DAYS(#{depDate})
+        </if>
+        order by price  <if test="ordering == 1 ">desc</if>
+    </select>
+
+    <select id="selectFlightById" resultMap="FlightResultMap">
+        select *
+        from flight
+        where id=${id}
+    </select>
+</mapper>

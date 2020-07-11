@@ -6,10 +6,10 @@ import "./styles/index.css";
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import "./styles/customize.css";
-
+import { InfiniteScroll } from "element-ui";
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
-
+Vue.use(InfiniteScroll);
 new Vue({
   store: store,
   router: router,

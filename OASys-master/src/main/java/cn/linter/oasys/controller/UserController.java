@@ -38,8 +38,11 @@ public class UserController {
     @PreAuthorize("hasRole('经理')")
     @GetMapping("/getUsers")
     public Response getUsers(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber,
-                             @RequestParam(value = "pageSize", defaultValue = "8") int pageSize) {
-        PageInfo<?> pageInfo = userService.getUsers(pageNumber, pageSize);
+                             @RequestParam(value = "pageSize", defaultValue = "8") int pageSize,
+                             String username,
+                             String email
+                             ) {
+        PageInfo<?> pageInfo = userService.getUsers(pageNumber, pageSize,username,email);
         return new Response("success", pageInfo.getTotal(), pageInfo.getList());
     }
 

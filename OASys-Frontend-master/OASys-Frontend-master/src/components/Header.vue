@@ -1,15 +1,22 @@
 <template>
     <div class="header">
+        <ul class="name-list">
+            <li>
+                <a href="/guest">首页</a>
+            </li>
+        </ul>
         <ul class="nav-list">
             <li v-if="auth" class="nav">
                 欢迎您，{{ auth.username }}，
             </li>
+
             <notice/>
             <li class="nav">
                 <a href="javascript:" @click="logout">
                     退出登录
                 </a>
             </li>
+
         </ul>
     </div>
 </template>
@@ -52,6 +59,10 @@
         margin: auto;
     }
 
+    .name-list {
+        margin-right: auto;
+        display: flex;
+    }
     .nav-list {
         margin-left: auto;
         display: flex;
@@ -59,6 +70,9 @@
 
     .nav {
         margin-left: 10px;
+    }
+    .nav-right {
+        margin-right: 0px;
     }
 
     a {

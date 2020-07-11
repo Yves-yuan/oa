@@ -8,7 +8,7 @@ public interface UserService extends UserDetailsService {
 
     User getUserById(int id);
 
-    PageInfo<?> getUsers(int pageNumber, int pageSize);
+    PageInfo<?> getUsers(int pageNumber, int pageSize,String username,String email);
 
     int updateUser(User user);
 

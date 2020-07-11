@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.linter.oasys.mapper.HospitalDepartmentMapper">
+    <resultMap id="HospitalDepartmentResultMap" type="HospitalDepartment">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="classification" column="classification"/>
+        <result property="category" column="category"/>
+    </resultMap>
+
+    <insert id="insertHospitalDepartmentList" parameterType="java.util.List">
+        insert into hospitalDepartment (name,classification,category)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.name},#{item.classification},#{item.category})
+        </foreach>
+    </insert>
+    <insert id="insertHospitalDepartment" parameterType="HospitalDepartment">
+        insert into hospitalDepartment (name,classification,category)
+        values (#{name},#{classification},#{category}
+    </insert>
+
+    <update id="updateHospitalDepartment">
+        update hospitalDepartment
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name != null">name=#{name},</if>
+            <if test="classification != null">classification=#{classification},</if>
+            <if test="category != null">category=#{category},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHospitalDepartment">
+        delete from hospitalDepartment where id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+
+
+    <select id="selectHospitalDepartment"  parameterType="hashmap" resultMap="HospitalDepartmentResultMap">
+        select *
+        from hospitalDepartment
+        where 1=1
+        <if test="tagid != null and tagid != ''">
+            and (locate(#{name},name)>0 or locate(name,#{name})>0)
+        </if>
+        <if test="componentType != null and componentType != ''">
+            and (locate(#{classification},classification)>0 or locate(classification,#{classification})>0)
+        </if>
+        <if test="subType != null and subType != ''">
+            and (locate(#{category},category)>0 or locate(category,#{category})>0)
+        </if>
+    </select>
+
+    <select id="selectHospitalDepartmentById" resultMap="HospitalDepartmentResultMap">
+        select *
+        from hospitalDepartment
+        where id=${id}
+    </select>
+</mapper>

@@ -1,6 +1,5 @@
 <template>
     <div class="index">
-       后台首页
     </div>
 </template>
 

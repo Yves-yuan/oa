@@ -4,6 +4,7 @@ import cn.linter.oasys.entity.Response;
 import cn.linter.oasys.entity.User;
 import cn.linter.oasys.service.FileService;
 import com.github.pagehelper.PageInfo;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,11 +16,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
+import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("/api")
 public class FileController {
 
     private final FileService fileService;
+    private static final Logger LOG = LoggerFactory.getLogger(FileController.class);
 
     @Autowired
     public FileController(FileService fileService) {
@@ -50,6 +54,7 @@ public class FileController {
         } else {
             rootPath = new ApplicationHome(getClass()).getSource().getParent();
         }
+        LOG.debug("upload file root path:" + rootPath);
         String fileName = multipartFile.getOriginalFilename();
         String filePath = rootPath + "/static/file/" + fileName;
         long fileSize = multipartFile.getSize();
@@ -57,6 +62,32 @@ public class FileController {
         fileService.uploadFile(fileName, fileSize, user, parentId, personal);
         return new Response("success", "上传成功！");
     }
+
+//    @PostMapping("/importData")
+//    public Response importData(@AuthenticationPrincipal User user, @RequestParam("file") MultipartFile multipartFile) throws IOException {
+//        String rootPath;
+//        String os = System.getProperty("os.name");
+//        if (os.toLowerCase().startsWith("win")) {
+//            rootPath = new ApplicationHome(getClass()).getSource().getPath();
+//        } else {
+//            rootPath = new ApplicationHome(getClass()).getSource().getParent();
+//        }
+//        LOG.debug("upload file root path:" + rootPath);
+//        String fileName = multipartFile.getOriginalFilename();
+//        String filePath = rootPath + "/static/file/" + fileName;
+//        Files.write(Paths.get(filePath), multipartFile.getBytes());
+//        try {
+//            int res = fileService.importData(filePath);
+//            if (res != -1){
+//                return new Response("success", "导入成功！");
+//            }else{
+//                return new Response("failure", "导入失败!");
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new Response("failure", "导入失败"+e.getMessage());
+//        }
+//    }
 
     @GetMapping("/renameFile")
     public Response renameFile(@RequestParam("id") int id, @RequestParam("newName") String newName) {

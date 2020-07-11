@@ -52,6 +52,19 @@
           and username = #{username}
     </select>
 
+    <select id="selectUserByMap"  parameterType="hashmap" resultMap="UserResultMap">
+        select user.*, role.id as role_id, role.name
+        from user,
+        role
+        where user.role_id = role.id
+        <if test="username != null and username != ''">
+            and username like concat('%',#{username},'%')
+        </if>
+        <if test="email != null and email != ''">
+            and email like concat('%',#{email},'%')
+        </if>
+    </select>
+
     <select id="selectUsers" resultMap="UserResultMap">
         select user.*, role.id as role_id, role.name
         from user,

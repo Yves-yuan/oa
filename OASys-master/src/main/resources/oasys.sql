@@ -209,7 +209,8 @@ CREATE TABLE `user`  (
   `picture` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `role_id` int(0) NOT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `username` (`username`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -220,12 +221,80 @@ INSERT INTO `user` VALUES (2, '主管一', '$2a$10$en2JxasguDAPugsYRPdHGOTazazki
 INSERT INTO `user` VALUES (3, '经理一', '$2a$10$en2JxasguDAPugsYRPdHGOTazazkihMqq3gC9yi8a8yBeQhpwFgCu', '一个经理', '/img/picture/3.jpg', '4613316156@qq.com', 3);
 INSERT INTO `user` VALUES (4, '员工二', '$2a$10$8aCXT4BWn17MEZ38hyGyQe5C3hS/lWRSf5agD0uleqs4QGOYek9Jm', '这是员工一', '/img/picture/4.jpg', '92+5466424@qq.com', 2);
 INSERT INTO `user` VALUES (5, '测试账号', '$10$en2JxasguDAPugsYRPdHGOTazazkihMqq3gC9yi8a8yBeQhpwFgCu', '号抵达看是否对啊和对方丢我hi', '/img/picture/default.jpg', '9861615616@qq.com', 1);
-INSERT INTO `user` VALUES (6, '测试账号', '$10$en2JxasguDAPugsYRPdHGOTazazkihMqq3gC9yi8a8yBeQhpwFgCu', '号抵达看是否对啊和对方丢我hi', '/img/picture/default.jpg', '9861615616@qq.com', 1);
-INSERT INTO `user` VALUES (7, '测试账号', '$10$en2JxasguDAPugsYRPdHGOTazazkihMqq3gC9yi8a8yBeQhpwFgCu', '号抵达看是否对啊和对方丢我hi', '/img/picture/default.jpg', '9861615616@qq.com', 3);
 INSERT INTO `user` VALUES (8, 'linter', '$2a$10$BfytaDghoDtXXiekiK71duKUrLoepB9tlODSOwoJFIMAFANeXMKJ.', '号抵达看是否对啊和对方丢我hi', '/img/picture/default.jpg', '9861615616@qq.com', 3);
-INSERT INTO `user` VALUES (9, '测试账号', '$10$en2JxasguDAPugsYRPdHGOTazazkihMqq3gC9yi8a8yBeQhpwFgCu', '号抵达看是否对啊和对方丢我hi', '/img/picture/default.jpg', '9861615616@qq.com', 1);
-INSERT INTO `user` VALUES (10, '测试账号', '$10$en2JxasguDAPugsYRPdHGOTazazkihMqq3gC9yi8a8yBeQhpwFgCu', '号抵达看是否对啊和对方丢我hi', '/img/picture/default.jpg', '9861615616@qq.com', 1);
 INSERT INTO `user` VALUES (15, '888', '$2a$10$aMzr8dXrgixN2sm7oG47Qu9t6GmdFG2i4zyoWf/60Uw02d5ituhA2', '这个人还没有填写个人介绍！', '/img/picture/default.jpg', 'kwxy1314@qq.com', 1);
 INSERT INTO `user` VALUES (16, '管理员', '$2a$10$8aCXT4BWn17MEZ38hyGyQe5C3hS/lWRSf5agD0uleqs4QGOYek9Jm', '78777777777', '/img/picture/default.jpg', 'kwxy1314@qq.com', 3);
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+DROP TABLE IF EXISTS `goods`;
+CREATE TABLE `goods`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `tagid` int(0) NOT NULL ,
+  `component_type` varchar(100)  ,
+  `sub_type` varchar(100)  ,
+  `manufacturer` varchar(255)  ,
+  `manufacturer_part_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci ,
+  `description` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci ,
+  `stock_qty` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `annual_stock` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `auto_replenish_rate` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `lead_time` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX  index_tagid  (tagid),
+  INDEX  index_manufacturer_part_number  (manufacturer_part_number)
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+DROP TABLE IF EXISTS `flight`;
+CREATE TABLE `flight`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `flightCompanyName` varchar(10) , -- 航空公司名字
+  `flightNo` varchar(10), -- 航班号
+  `cityFromName` varchar(10), -- 出发城市
+  `depInfo` varchar(10), -- 出发航站楼信息
+  `depDate` date ,  -- 出发日期
+  `depTime` TIMESTAMP , -- 出发具体时间
+  `cityToName` varchar(10) , -- 到达城市
+  `flightStatus`  varchar(10) , -- 经停信息
+  `arrInfo` varchar(10) , -- 到达航站楼信息
+  `arrTime` TIMESTAMP, -- 到达时间
+  `price` double ,  -- 价格
+  `punctualRate` double ,  -- 准点率
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX  index_cityFromName  (cityFromName)
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+DROP TABLE IF EXISTS `trainTicketOrder`;
+DROP TABLE IF EXISTS `trainTicket`;
+CREATE TABLE `trainTicket`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `fromName` varchar(100), -- 出发地
+  `toName` varchar(100) , -- 到达地
+  `trainNum` varchar(100), -- 车次号
+  `depTime` TIMESTAMP, -- 出发时间
+  `arrTime` TIMESTAMP, -- 到达时间
+  `remarks` varchar(255), -- 备注
+  `price` float, -- 价格
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+CREATE TABLE `trainTicketOrder`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `ticketId` int(0) ,
+  `userId` int(0) ,
+  PRIMARY KEY (`id`) USING BTREE,
+  foreign key(ticketId) references trainTicket(id),
+  foreign key(userId) references user(id)
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+DROP TABLE IF EXISTS `hospitalDepartment`;
+CREATE TABLE `hospitalDepartment`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) ,
+  `classification` varchar(255) ,
+  `category` varchar(255) ,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+

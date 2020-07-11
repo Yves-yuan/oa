@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.linter.oasys.mapper.TrainTicketOrderMapper">
+    <resultMap id="TrainTicketOrderResultMap" type="TrainTicketOrder">
+        <id property="id" column="id"/>
+        <association property="user" javaType="User">
+                        <result property="username" column="username"/>
+                        <result property="id" column="userId"/>
+        </association>
+        <association property="trainTicket" javaType="TrainTicket">
+                        <result property="id" column="trainTicketId"/>
+                        <result property="fromName" column="fromName"/>
+                        <result property="toName" column="toName"/>
+                        <result property="trainNum" column="trainNum"/>
+                        <result property="depTime" column="depTime"/>
+                        <result property="arrTime" column="arrTime"/>
+                        <result property="remarks" column="remarks"/>
+                        <result property="price" column="price"/>
+        </association>
+    </resultMap>
+
+
+    <insert id="insertTrainTicketOrder" parameterType="TrainTicketOrder">
+        insert into TrainTicketOrder (ticketId,userId)
+        values (#{trainTicket.id},#{user.id})
+    </insert>
+
+
+    <delete id="deleteTrainTicketOrder">
+        delete from TrainTicketOrder where id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+
+
+    <select id="selectTrainTicketOrder"  parameterType="hashmap" resultMap="TrainTicketOrderResultMap">
+        select a.id,b.id as userId,b.username,c.id as trainTicketId,c.fromName,c.toName,c.trainNum,
+		c.depTime,c.arrTime,c.remarks,c.price
+        from trainTicketOrder a join user b on a.userId=b.id join trainTicket c on a.ticketId=c.id
+        where 1=1
+        <if test="userId != null">
+            and userId=#{userId}
+        </if>
+		 <if test="ticketId != null">
+            and ticketId=#{ticketId}
+        </if>
+    </select>
+
+    <select id="selectTrainTicketOrderById" resultMap="TrainTicketOrderResultMap">
+         select b.id as userId,b.username,c.id as trainTicketId,c.fromName,c.toName,c.trainNum,
+		c.depTime,c.arrTime,c.remarks,c.price
+        from trainTicketOrder a join user b on a.userId=b.id join trainTicket c on a.ticketId=c.id
+        where a.id=${id}
+    </select>
+</mapper>

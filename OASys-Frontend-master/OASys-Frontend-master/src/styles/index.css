@@ -38,3 +38,9 @@ ul {
     margin-top: 15px;
     text-align: center;
 }
+.el-input__inner{
+    height: 40px;
+}
+.box-card{
+    margin-bottom: 20px;
+}

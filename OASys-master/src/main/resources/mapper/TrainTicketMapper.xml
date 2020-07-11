@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.linter.oasys.mapper.TrainTicketMapper">
+    <resultMap id="TrainTicketResultMap" type="TrainTicket">
+        <id property="id" column="id"/>
+        <result property="fromName" column="fromName"/>
+        <result property="toName" column="toName"/>
+        <result property="trainNum" column="trainNum"/>
+        <result property="depTime" column="depTime"/>
+        <result property="arrTime" column="arrTime"/>
+        <result property="remarks" column="remarks"/>
+		<result property="price" column="price"/>
+    </resultMap>
+
+
+    <insert id="insertTrainTicket" parameterType="TrainTicket">
+        insert into trainTicket (fromName,toName,trainNum,depTime,arrTime,remarks,price)
+        values (#{fromName},#{toName},#{trainNum},#{depTime},#{arrTime},
+        #{remarks},#{price})
+    </insert>
+
+    <update id="updateTrainTicket">
+        update trainTicket
+        <trim prefix="set" suffixOverrides=",">
+            <if test="fromName != null">fromName=#{fromName},</if>
+            <if test="toName != null">toName=#{toName},</if>
+            <if test="trainNum != null">trainNum=#{trainNum},</if>
+            <if test="depTime != null">depTime=#{depTime},</if>
+			<if test="arrTime != null">arrTime=#{arrTime},</if>
+            <if test="remarks != null">remarks=#{remarks},</if>
+			<if test="price != null">price=#{price},</if>
+            
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTrainTicket">
+        delete from trainTicket where id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+
+
+    <select id="selectTrainTicket"  parameterType="hashmap" resultMap="TrainTicketResultMap">
+        select *
+        from trainTicket
+        where 1=1
+        <if test="fromName != null and fromName != ''">
+            and (locate(#{fromName},fromName)>0 or locate(fromName,#{fromName})>0)
+        </if>
+        <if test="toName != null and toName != ''">
+            and (locate(#{toName},toName)>0 or locate(toName,#{toName})>0)
+        </if>
+        <if test="trainNum != null and trainNum != ''">
+            and (locate(#{trainNum},trainNum)>0 or locate(trainNum,#{trainNum})>0)
+        </if>
+        <if test="depTimeFrom != null">
+            and depTime &gt;= #{depTimeFrom}
+        </if>
+		<if test="depTimeTo != null">
+            and depTime &lt;= #{depTimeTo}
+        </if>
+        order by price  <if test="ordering == 1 ">desc</if>
+    </select>
+
+    <select id="selectTrainTicketById" resultMap="TrainTicketResultMap">
+        select *
+        from trainTicket
+        where id=${id}
+    </select>
+</mapper>

@@ -1,23 +1,35 @@
 package cn.linter.oasys.service;
 
 import cn.linter.oasys.entity.File;
+import cn.linter.oasys.entity.Goods;
 import cn.linter.oasys.entity.User;
 import cn.linter.oasys.mapper.FileMapper;
+import cn.linter.oasys.mapper.GoodsMapper;
+import cn.linter.oasys.utils.ExcelColumnIndex;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.stereotype.Service;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.*;
 
 @Service
 public class FileServiceImpl implements FileService {
     private final FileMapper fileMapper;
+    private final GoodsMapper goodsMapper;
 
     @Autowired
-    public FileServiceImpl(FileMapper fileMapper) {
+    public FileServiceImpl(FileMapper fileMapper, GoodsMapper goodsMapper) {
         this.fileMapper = fileMapper;
+        this.goodsMapper = goodsMapper;
     }
 
     @Override
@@ -58,6 +70,95 @@ public class FileServiceImpl implements FileService {
         file.setCreateTime(new Timestamp(time));
         fileMapper.insertFile(file);
     }
+
+////    public int importData(String filePath) throws Exception {
+////        Workbook wb = null;
+////        if (filePath == null) {
+////            return -1;
+////        }
+////        String[] columns = GoodsServiceImpl.arr;
+////        String extString = filePath.substring(filePath.lastIndexOf("."));
+////        InputStream is = new FileInputStream(filePath);
+////        if (".xls".equals(extString)) {
+////            wb = new HSSFWorkbook(is);
+////        } else if (".xlsx".equals(extString)) {
+////            wb = new XSSFWorkbook(is);
+////        } else {
+////            throw new Exception("文件后缀名不正确");
+////        }
+////        List<Map<String, Object>> list = new ArrayList<>();
+////        Sheet sheet = wb.getSheetAt(0);
+////        int rownum = sheet.getPhysicalNumberOfRows();
+////        //获取表字段对应的列号表
+////        Row row = sheet.getRow(0);
+////        int columnNum = row.getPhysicalNumberOfCells();
+////        List<ExcelColumnIndex> ecis = new ArrayList<>();
+////        for (String x : columns) {
+////            for (int j = 0; j < columnNum; j++) {
+////                String cellData = (String) getCellFormatValue(row.getCell(j));
+////                if (x.toLowerCase().equals(cellData.toLowerCase())){
+////                    ecis.add(new ExcelColumnIndex(x.toLowerCase(),j));
+////                }
+////            }
+////        }
+////        for (int i = 1; i < rownum; i++) {
+////            Map<String, Object> map = new LinkedHashMap<>();
+////            row = sheet.getRow(i);
+////            if (row != null) {
+////                for (ExcelColumnIndex e : ecis) {
+////                    Object cellData = getCellFormatValue(row.getCell(e.getColumnIndex()));
+////                    String columnName = e.getColumnName();
+////                    if (columnName == "price") {
+////                        String cs = (String) cellData;
+////                        try {
+////                            BigDecimal b = new BigDecimal(cs);
+////                            cellData = b;
+////                        } catch (Exception ex) {
+////                            cellData = null;
+////                        }
+////                    }
+////                    map.put(columnName.replace(" ", ""), cellData);
+////                }
+////            } else {
+////                break;
+////            }
+////            list.add(map);
+////        }
+////        return goodsMapper.insertGoodsList(list);
+////    }
+//
+//    public Object getCellFormatValue(Cell cell) {
+//        Object cellValue = null;
+//        if (cell != null) {
+//            //判断cell类型
+//            switch (cell.getCellType()) {
+//                case Cell.CELL_TYPE_NUMERIC: {
+//                    cellValue = String.valueOf(cell.getNumericCellValue());
+//                    break;
+//                }
+//                case Cell.CELL_TYPE_FORMULA: {
+//                    //判断cell是否为日期格式
+//                    if (DateUtil.isCellDateFormatted(cell)) {
+//                        //转换为日期格式YYYY-mm-dd
+//                        cellValue = cell.getDateCellValue();
+//                    } else {
+//                        //数字
+//                        cellValue = String.valueOf(cell.getNumericCellValue());
+//                    }
+//                    break;
+//                }
+//                case Cell.CELL_TYPE_STRING: {
+//                    cellValue = cell.getRichStringCellValue().getString();
+//                    break;
+//                }
+//                default:
+//                    cellValue = "";
+//            }
+//        } else {
+//            cellValue = "";
+//        }
+//        return cellValue;
+//    }
 
     @Override
     public void renameFile(int id, String newName) {

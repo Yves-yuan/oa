@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -42,10 +44,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageInfo<?> getUsers(int pageNumber, int pageSize) {
+    public PageInfo<?> getUsers(int pageNumber, int pageSize ,String username,String email) {
         PageHelper.startPage(pageNumber, pageSize);
-        return new PageInfo<>(userMapper.selectUsers());
+        HashMap<String,Object> m = new HashMap<>();
+        m.put("pageNumber",pageNumber);
+        m.put("pageSize",pageSize);
+        m.put("username",username);
+        m.put("email",email);
+        return new PageInfo<>(userMapper.selectUserByMap(m));
     }
+
 
     @Override
     public int updateUser(User user) {

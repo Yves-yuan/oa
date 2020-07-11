@@ -12,12 +12,31 @@ import PublicNetDisk from "../views/PublicNetDisk";
 import AskLeave from "../views/AskLeave";
 import CheckLeave from "../views/CheckLeave";
 import AddUser from "../views/AddUser";
-import EditUser from "../views/EditUser";
-import NotFound from "../views/NotFound";
+import User from "../views/User";
+import Goods from "../views/Goods";
+import Flight from "../views/Flight";
+import Flightsearch from "../views/FlightSearch";
+import TrainTicket from "../views/TrainTicket";
+import TrainTicketOrder from "../views/TrainTicketOrder";
+import TrainTicketSearch from "../views/TrainTicketSearch";
+import GuestIndex from "../views/GuestIndex";
+import Guest from "../layout/Guest";
+
 
 Vue.use(VueRouter);
 
 const routes = [
+	{
+        path: "/guest",
+        component: Guest,
+        children: [
+            {
+                path: "",
+                name: "guest-index",
+                component: GuestIndex,
+            }
+        ]
+    },
     {
         path: "/",
         component: Admin,
@@ -68,10 +87,41 @@ const routes = [
                 component: AddUser,
             },
             {
-                path: "/edit-user",
-                name: "edit-user",
-                component: EditUser,
+                path: "/user",
+                name: "user",
+                component: User,
             },
+            {
+                path: "/goods",
+                name: "goods",
+                component: Goods,
+            },
+            {
+                path: "/flight",
+                name: "flight",
+                component: Flight,
+            },
+            {
+                path: "/flightsearch",
+                name: "flightsearch",
+                component: Flightsearch,
+            },
+            {
+                path: "/trainTicket",
+                name: "trainTicket",
+                component: TrainTicket,
+            },
+            {
+                path: "/trainTicketOrder",
+                name: "trainTicketOrder",
+                component: TrainTicketOrder,
+            },
+            {
+                path: "/trainTicketSearch",
+                name: "trainTicketSearch",
+                component: TrainTicketSearch,
+            },
+
         ]
     },
     {
@@ -81,7 +131,7 @@ const routes = [
     },
     {
         path: "*",
-        component: NotFound
+        component: GuestIndex
     }
 ];
 
@@ -91,13 +141,19 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+    if (to.name.startsWith("guest")){
+        next();
+    }
     if (store.state.auth || to.name == "login") {
         next();
     } else if (from.name == "login" && to.name == "index") {
         next();
     } else {
-        router.push({name: "login"})
+        router.push({name: "guest-index"});
     }
 });
-
-export default router
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch(err => err);
+};
+export default router;

@@ -4,6 +4,7 @@ import cn.linter.oasys.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Mapper
@@ -13,6 +14,8 @@ public interface UserMapper {
     User selectUserByUsername(@Param("username") String username);
 
     List<User> selectUsers();
+
+    List<User> selectUserByMap(HashMap<String,Object> m);
 
     int updateUser(User user);
 

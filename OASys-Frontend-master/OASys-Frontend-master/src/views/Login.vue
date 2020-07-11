@@ -1,18 +1,22 @@
 <template>
     <div class="login">
         <el-form :model="forms" :rules="rules" :ref="forms" class="login-form">
+<!--            <el-image :src="require('../assets/favicon.ico')"></el-image>-->
+            <el-form-item class="logo" align-items="center" justify-content="center">
+                <el-image :src="require('../assets/logo.png')" fit="cover" align-items="center" justify-content="center"></el-image>
+            </el-form-item>
             <h3 class="title">
-                OA管理系统
+                APL Invention User View
             </h3>
             <el-form-item prop="username">
-                <el-input type="text" v-model="forms.username" placeholder="用户名"/>
+                <el-input type="text" v-model="forms.username" placeholder="username"/>
             </el-form-item>
             <el-form-item prop="password">
-                <el-input type="password" v-model="forms.password" placeholder="密码"
+                <el-input type="password" v-model="forms.password" placeholder="password"
                           @keyup.enter.native="onSubmit(forms)"/>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="onSubmit(forms)" :loading="load" round>登录</el-button>
+                <el-button type="primary" @click="onSubmit(forms)" :loading="load" round>login</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -87,6 +91,10 @@
         text-align: center;
         color: #707070;
     }
+    .logo {
+        text-align: center;
+        height: 30px;
+    }
 
     .login-form {
         padding: 25px 25px 5px;
@@ -94,7 +102,9 @@
         background: #fff;
         width: 300px;
     }
-
+    .el-image{
+        text-align: center;
+    }
     .el-button {
         width: 100%;
     }

@@ -13,16 +13,17 @@
         <result property="annualStock" column="annual_stock"/>
         <result property="autoReplenishRate" column="auto_replenish_rate"/>
         <result property="leadTime" column="lead_time"/>
+        <result property="price" column="price"/>
     </resultMap>
 
     <insert id="insertGoodsList" parameterType="java.util.List">
         insert into goods (tagid,component_type,sub_type,manufacturer,manufacturer_part_number,description,stock_qty,
-        annual_stock,auto_replenish_rate,lead_time)
+        annual_stock,auto_replenish_rate,lead_time,price,date)
         values
         <foreach collection="list" item="item" index="index" separator=",">
             (#{item.tagid},#{item.componenttype},#{item.sub-type},
             #{item.manufacturer},#{item.manufacturerpartnumber},#{item.description},#{item.stockqty},
-            #{item.annualstock},#{item.autoreplenishrate},#{item.leadtime})
+            #{item.annualstock},#{item.autoreplenishrate},#{item.leadtime},#{item.price},#{item.date})
         </foreach>
     </insert>
     <insert id="insertGoods" parameterType="Goods">
@@ -45,19 +46,21 @@
             <if test="annualStock != null">annual_stock=#{annualStock},</if>
             <if test="autoReplenishRate != null">auto_replenish_rate=#{autoReplenishRate},</if>
             <if test="leadTime != null">lead_time=#{leadTime},</if>
+            <if test="price != null">price=#{price},</if>
         </trim>
         where id = #{id}
     </update>
-    <delete id="deleteAllGoods">
-        truncate goods
-
-    </delete>
 
     <delete id="deleteGoods">
         delete from goods where id in
         <foreach collection="ids" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
+    </delete>
+
+    <delete id="deleteAllGoods">
+        truncate goods
+
     </delete>
 
 

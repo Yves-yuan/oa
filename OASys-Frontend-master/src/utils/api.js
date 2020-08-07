@@ -101,8 +101,8 @@ export function getGoods(params) {
 export function exportGoods(params,filename) {
     return download("post","/api/exportGoods", params,filename);
 }
-export function deleteAllGoods() {
-    return post("/api/deleteAllGoods");
+export function deleteAllGoods(data) {
+    return post("/api/deleteAllGoods", data);
 }
 export function updateGoods(data) {
     return post("/api/updateGoods", data);
@@ -130,35 +130,4 @@ export function updateFlight(data) {
 
 export function deleteFlight(data) {
     return post("/api/deleteFlight", data);
-}
-
-
-export function addTrainTicket(params) {
-    return post("/api/addTrainTicket", params);
-}
-export function getTrainTicket(params) {
-    return get("/api/getTrainTicket", params);
-}
-
-export function updateTrainTicket(data) {
-    return post("/api/updateTrainTicket", data);
-}
-
-export function deleteTrainTicket(data) {
-    return post("/api/deleteTrainTicket", data);
-}
-
-export function addTrainTicketOrder(params) {
-    return post("/api/addTrainTicketOrder", params);
-}
-export function getTrainTicketOrder(params) {
-    return get("/api/getTrainTicketOrder", params);
-}
-
-export function updateTrainTicketOrder(data) {
-    return post("/api/updateTrainTicketOrder", data);
-}
-
-export function deleteTrainTicketOrder(data) {
-    return post("/api/deleteTrainTicketOrder", data);
 }

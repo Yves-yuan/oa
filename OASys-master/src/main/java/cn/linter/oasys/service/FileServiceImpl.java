@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -71,94 +72,122 @@ public class FileServiceImpl implements FileService {
         fileMapper.insertFile(file);
     }
 
-////    public int importData(String filePath) throws Exception {
-////        Workbook wb = null;
-////        if (filePath == null) {
-////            return -1;
-////        }
-////        String[] columns = GoodsServiceImpl.arr;
-////        String extString = filePath.substring(filePath.lastIndexOf("."));
-////        InputStream is = new FileInputStream(filePath);
-////        if (".xls".equals(extString)) {
-////            wb = new HSSFWorkbook(is);
-////        } else if (".xlsx".equals(extString)) {
-////            wb = new XSSFWorkbook(is);
-////        } else {
-////            throw new Exception("文件后缀名不正确");
-////        }
-////        List<Map<String, Object>> list = new ArrayList<>();
-////        Sheet sheet = wb.getSheetAt(0);
-////        int rownum = sheet.getPhysicalNumberOfRows();
-////        //获取表字段对应的列号表
-////        Row row = sheet.getRow(0);
-////        int columnNum = row.getPhysicalNumberOfCells();
-////        List<ExcelColumnIndex> ecis = new ArrayList<>();
-////        for (String x : columns) {
-////            for (int j = 0; j < columnNum; j++) {
-////                String cellData = (String) getCellFormatValue(row.getCell(j));
-////                if (x.toLowerCase().equals(cellData.toLowerCase())){
-////                    ecis.add(new ExcelColumnIndex(x.toLowerCase(),j));
-////                }
-////            }
-////        }
-////        for (int i = 1; i < rownum; i++) {
-////            Map<String, Object> map = new LinkedHashMap<>();
-////            row = sheet.getRow(i);
-////            if (row != null) {
-////                for (ExcelColumnIndex e : ecis) {
-////                    Object cellData = getCellFormatValue(row.getCell(e.getColumnIndex()));
-////                    String columnName = e.getColumnName();
-////                    if (columnName == "price") {
-////                        String cs = (String) cellData;
-////                        try {
-////                            BigDecimal b = new BigDecimal(cs);
-////                            cellData = b;
-////                        } catch (Exception ex) {
-////                            cellData = null;
-////                        }
-////                    }
-////                    map.put(columnName.replace(" ", ""), cellData);
-////                }
-////            } else {
-////                break;
-////            }
-////            list.add(map);
-////        }
-////        return goodsMapper.insertGoodsList(list);
-////    }
-//
-//    public Object getCellFormatValue(Cell cell) {
-//        Object cellValue = null;
-//        if (cell != null) {
-//            //判断cell类型
-//            switch (cell.getCellType()) {
-//                case Cell.CELL_TYPE_NUMERIC: {
-//                    cellValue = String.valueOf(cell.getNumericCellValue());
-//                    break;
-//                }
-//                case Cell.CELL_TYPE_FORMULA: {
-//                    //判断cell是否为日期格式
-//                    if (DateUtil.isCellDateFormatted(cell)) {
-//                        //转换为日期格式YYYY-mm-dd
-//                        cellValue = cell.getDateCellValue();
-//                    } else {
-//                        //数字
-//                        cellValue = String.valueOf(cell.getNumericCellValue());
-//                    }
-//                    break;
-//                }
-//                case Cell.CELL_TYPE_STRING: {
-//                    cellValue = cell.getRichStringCellValue().getString();
-//                    break;
-//                }
-//                default:
-//                    cellValue = "";
-//            }
-//        } else {
-//            cellValue = "";
+    public int importData(String filePath) throws Exception {
+        Workbook wb = null;
+        if (filePath == null) {
+            return -1;
+        }
+        String[] columns = GoodsServiceImpl.arr;
+        String extString = filePath.substring(filePath.lastIndexOf("."));
+        InputStream is = new FileInputStream(filePath);
+        if (".xls".equals(extString)) {
+            wb = new HSSFWorkbook(is);
+        } else if (".xlsx".equals(extString)) {
+            wb = new XSSFWorkbook(is);
+        } else {
+            throw new Exception("文件后缀名不正确");
+        }
+        List<Map<String, Object>> list = new ArrayList<>();
+        Sheet sheet = wb.getSheetAt(0);
+        int rownum = sheet.getPhysicalNumberOfRows();
+        //获取表字段对应的列号表
+        Row row = sheet.getRow(0);
+        int columnNum = row.getPhysicalNumberOfCells();
+        List<ExcelColumnIndex> ecis = new ArrayList<>();
+        for (String x : columns) {
+            for (int j = 0; j < columnNum; j++) {
+                String cellData = (String) getCellFormatValue(row.getCell(j));
+                if (x.toLowerCase().equals(cellData.toLowerCase())) {
+                    ecis.add(new ExcelColumnIndex(x.toLowerCase(), j));
+                }
+            }
+        }
+        for (int i = 1; i < rownum; i++) {
+            Map<String, Object> map = new LinkedHashMap<>();
+            row = sheet.getRow(i);
+            if (row != null) {
+                for (ExcelColumnIndex e : ecis) {
+                    String columnName = e.getColumnName();
+                    Object cellData;
+                    if (columnName.equals("date")) {
+                        Cell cell = row.getCell(e.getColumnIndex());
+                        if (cell != null) {
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                            cellData = format.format(row.getCell(e.getColumnIndex()).getDateCellValue());
+                        } else {
+                            cellData = "";
+                        }
+
+                    } else {
+                        cellData = getCellFormatValue(row.getCell(e.getColumnIndex()));
+                    }
+                    if (columnName.equals("price")) {
+                        String cs = (String) cellData;
+                        try {
+                            BigDecimal b = new BigDecimal(cs);
+                            cellData = b;
+                        } catch (Exception ex) {
+                            cellData = null;
+                        }
+                    }
+                    map.put(columnName.replace(" ", ""), cellData);
+                }
+            } else {
+                break;
+            }
+            list.add(map);
+        }
+//        List<Goods> gs = new ArrayList<>();
+//        for (Map<String, Object> map : list) {
+//            Goods g = new Goods();
+//            g.setTagid(map.get("tagid"));
+//            g.setComponentType(map.get("component type"));
+//            g.setSubType(map.get("sub-type"));
+//            g.setManufacturer(map.get("manufacturer"));
+//            g.setManufacturerPartNumber(map.get("manufacturer part number"));
+//            g.setDescription(map.get("description"));
+//            g.setStockQty(map.get("stock qty"));
+//            g.setAnnualStock(map.get("annual stock"));
+//            g.setAutoReplenishRate(map.get("auto replenish rate"));
+//            g.setLeadTime(map.get("lead time"));
+//            g.setPrice(map.get("price"));
+//            gs.add(g);
 //        }
-//        return cellValue;
-//    }
+        return goodsMapper.insertGoodsList(list);
+    }
+
+    public Object getCellFormatValue(Cell cell) {
+        Object cellValue = null;
+        if (cell != null) {
+            //判断cell类型
+            switch (cell.getCellType()) {
+                case Cell.CELL_TYPE_NUMERIC: {
+                    cellValue = String.valueOf(cell.getNumericCellValue());
+                    break;
+                }
+                case Cell.CELL_TYPE_FORMULA: {
+                    //判断cell是否为日期格式
+                    if (DateUtil.isCellDateFormatted(cell)) {
+                        //转换为日期格式YYYY-mm-dd
+                        cellValue = cell.getDateCellValue();
+                    } else {
+                        //数字
+                        cellValue = String.valueOf(cell.getNumericCellValue());
+                    }
+                    break;
+                }
+                case Cell.CELL_TYPE_STRING: {
+                    cellValue = cell.getRichStringCellValue().getString();
+                    break;
+                }
+                default:
+                    cellValue = "";
+            }
+        } else {
+            cellValue = "";
+        }
+        return cellValue;
+    }
 
     @Override
     public void renameFile(int id, String newName) {

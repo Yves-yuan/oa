@@ -7,10 +7,10 @@
                     <el-avatar v-if="auth" class="avatar" :src="auth.picture"/>
                     <div class="media-body profile">
                         <div v-if="auth" class="username">
-                            姓名：{{ auth.username }}
+                            name：{{ auth.username }}
                         </div>
                         <div v-if="auth" class="rolename">
-                            职位：{{ auth.role.name }}
+                            role：{{ auth.role.name }}
                         </div>
                     </div>
                 </div>
@@ -78,11 +78,9 @@
                         <i class="el-icon-user"/>
                         <span>Manage</span>
                     </template>
-                    <el-menu-item index="/user">user manage</el-menu-item>
-<!--                    <el-menu-item index="/trainTicket">train ticket manage</el-menu-item>-->
-<!--                    <el-menu-item index="/trainTicketSearch">train ticket search</el-menu-item>-->
-<!--                    <el-menu-item index="/trainTicketOrder">my order</el-menu-item>-->
-                    <el-menu-item index="/goods">data manage</el-menu-item>
+                    <el-menu-item v-show="this.$store.state.auth.role.name=='经理'" index="/user">user manage</el-menu-item>
+                    <el-menu-item v-show="this.$store.state.auth.role.name=='经理'" index="/goods">data manage</el-menu-item>
+                    <el-menu-item index="/lookgoods">->inventory lookup</el-menu-item>
 <!--                    <el-menu-item index="/flight">管理航班</el-menu-item>-->
 <!--                    <el-menu-item index="/flightsearch">查询航班</el-menu-item>-->
                 </el-submenu>
@@ -98,7 +96,14 @@
         name: "Aside",
         computed: mapState([
             "auth"
-        ])
+        ]),
+        methods:{
+            isAdmin() {
+                this.$store.state.auth.role.name==="111"
+            },
+        },
+        mounted() {
+        }
     }
 </script>
 

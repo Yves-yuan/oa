@@ -2,14 +2,14 @@
     <div class="login">
         <el-form :model="forms" :rules="rules" :ref="forms" class="login-form">
 <!--            <el-image :src="require('../assets/favicon.ico')"></el-image>-->
-            <el-form-item class="logo" align-items="center" justify-content="center">
+            <el-form-item class="logo" align-items="center" justify-content="center" >
                 <el-image :src="require('../assets/logo.png')" fit="cover" align-items="center" justify-content="center"></el-image>
             </el-form-item>
             <h3 class="title">
-                APL Invention User View
+                APL Inventory User View
             </h3>
             <el-form-item prop="username">
-                <el-input type="text" v-model="forms.username" placeholder="username"/>
+                <el-input autofocus type="text" v-model="forms.username" placeholder="username"/>
             </el-form-item>
             <el-form-item prop="password">
                 <el-input type="password" v-model="forms.password" placeholder="password"
@@ -93,7 +93,6 @@
     }
     .logo {
         text-align: center;
-        height: 30px;
     }
 
     .login-form {

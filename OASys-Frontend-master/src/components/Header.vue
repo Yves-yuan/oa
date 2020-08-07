@@ -1,22 +1,15 @@
 <template>
     <div class="header">
-        <ul class="name-list">
-            <li>
-                <a href="/guest">首页</a>
-            </li>
-        </ul>
         <ul class="nav-list">
             <li v-if="auth" class="nav">
-                欢迎您，{{ auth.username }}，
+                welcome，{{ auth.username }}，
             </li>
-
             <notice/>
             <li class="nav">
                 <a href="javascript:" @click="logout">
-                    退出登录
+                    exit
                 </a>
             </li>
-
         </ul>
     </div>
 </template>
@@ -35,7 +28,7 @@
         ]),
         methods: {
             logout() {
-                this.$confirm("确定注销？", "提示", {type: "warning",})
+                this.$confirm("sign out？", "notice", {type: "warning",})
                     .then(() => {
                         logout().then(response => {
                             if (response && response.status === "success") {
@@ -46,7 +39,7 @@
                         })
                     })
                     .catch(() => {
-                        this.$message.warning("已取消！")
+                        this.$message.warning("calceld！")
                     })
             }
         },
@@ -59,10 +52,6 @@
         margin: auto;
     }
 
-    .name-list {
-        margin-right: auto;
-        display: flex;
-    }
     .nav-list {
         margin-left: auto;
         display: flex;
@@ -70,9 +59,6 @@
 
     .nav {
         margin-left: 10px;
-    }
-    .nav-right {
-        margin-right: 0px;
     }
 
     a {

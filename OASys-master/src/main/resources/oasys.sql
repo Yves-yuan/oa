@@ -237,10 +237,12 @@ CREATE TABLE `goods`  (
   `manufacturer` varchar(255)  ,
   `manufacturer_part_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci ,
   `description` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci ,
+  `date` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci ,
   `stock_qty` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `annual_stock` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `auto_replenish_rate` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `lead_time` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `price` DECIMAL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX  index_tagid  (tagid),
   INDEX  index_manufacturer_part_number  (manufacturer_part_number)
@@ -264,37 +266,3 @@ CREATE TABLE `flight`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX  index_cityFromName  (cityFromName)
 ) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
-DROP TABLE IF EXISTS `trainTicketOrder`;
-DROP TABLE IF EXISTS `trainTicket`;
-CREATE TABLE `trainTicket`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT,
-  `fromName` varchar(100), -- 出发地
-  `toName` varchar(100) , -- 到达地
-  `trainNum` varchar(100), -- 车次号
-  `depTime` TIMESTAMP, -- 出发时间
-  `arrTime` TIMESTAMP, -- 到达时间
-  `remarks` varchar(255), -- 备注
-  `price` float, -- 价格
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
-CREATE TABLE `trainTicketOrder`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT,
-  `ticketId` int(0) ,
-  `userId` int(0) ,
-  PRIMARY KEY (`id`) USING BTREE,
-  foreign key(ticketId) references trainTicket(id),
-  foreign key(userId) references user(id)
-) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
-DROP TABLE IF EXISTS `hospitalDepartment`;
-CREATE TABLE `hospitalDepartment`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) ,
-  `classification` varchar(255) ,
-  `category` varchar(255) ,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
-

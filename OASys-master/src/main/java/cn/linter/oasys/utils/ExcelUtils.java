@@ -1,24 +1,20 @@
 package cn.linter.oasys.utils;
 
-import cn.linter.oasys.service.HospitalDepartmentServiceImpl;
 import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.Date;
+import java.util.List;
 
 public class ExcelUtils {
     /**
@@ -89,88 +85,6 @@ public class ExcelUtils {
             e.printStackTrace();
         }
 
-    }
-
-    public static List<Map<String, Object>> importExcel(String filePath, String[] columns, BiFunction<Object, String, Object> f) throws Exception {
-        Workbook wb = null;
-        if (filePath == null) {
-            return null;
-        }
-        String extString = filePath.substring(filePath.lastIndexOf("."));
-        InputStream is = new FileInputStream(filePath);
-        if (".xls".equals(extString)) {
-            wb = new HSSFWorkbook(is);
-        } else if (".xlsx".equals(extString)) {
-            wb = new XSSFWorkbook(is);
-        } else {
-            throw new Exception("文件后缀名不正确");
-        }
-        List<Map<String, Object>> list = new ArrayList<>();
-        Sheet sheet = wb.getSheetAt(0);
-        int rownum = sheet.getPhysicalNumberOfRows();
-        //获取表字段对应的列号表
-        Row row = sheet.getRow(0);
-        int columnNum = row.getPhysicalNumberOfCells();
-        List<ExcelColumnIndex> ecis = new ArrayList<>();
-        for (String x : columns) {
-            for (int j = 0; j < columnNum; j++) {
-                String cellData = (String) getCellFormatValue(row.getCell(j));
-                if (x.toLowerCase().equals(cellData.toLowerCase())) {
-                    ecis.add(new ExcelColumnIndex(x.toLowerCase(), j));
-                }
-            }
-        }
-        for (int i = 1; i < rownum; i++) {
-            Map<String, Object> map = new LinkedHashMap<>();
-            row = sheet.getRow(i);
-            if (row != null) {
-                for (ExcelColumnIndex e : ecis) {
-                    Object cellData = getCellFormatValue(row.getCell(e.getColumnIndex()));
-                    String columnName = e.getColumnName();
-                    if (f != null) {
-                        cellData = f.apply(cellData, columnName);
-                    }
-                    map.put(columnName.replace(" ", ""), cellData);
-                }
-            } else {
-                break;
-            }
-            list.add(map);
-        }
-        return list;
-    }
-
-    public static Object getCellFormatValue(Cell cell) {
-        Object cellValue = null;
-        if (cell != null) {
-            //判断cell类型
-            switch (cell.getCellType()) {
-                case Cell.CELL_TYPE_NUMERIC: {
-                    cellValue = String.valueOf(cell.getNumericCellValue());
-                    break;
-                }
-                case Cell.CELL_TYPE_FORMULA: {
-                    //判断cell是否为日期格式
-                    if (DateUtil.isCellDateFormatted(cell)) {
-                        //转换为日期格式YYYY-mm-dd
-                        cellValue = cell.getDateCellValue();
-                    } else {
-                        //数字
-                        cellValue = String.valueOf(cell.getNumericCellValue());
-                    }
-                    break;
-                }
-                case Cell.CELL_TYPE_STRING: {
-                    cellValue = cell.getRichStringCellValue().getString();
-                    break;
-                }
-                default:
-                    cellValue = "";
-            }
-        } else {
-            cellValue = "";
-        }
-        return cellValue;
     }
 
     private static String transCellType(Object value) {

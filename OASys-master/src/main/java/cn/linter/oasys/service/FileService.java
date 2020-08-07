@@ -13,5 +13,5 @@ public interface FileService {
     void renameFile(int id, String newName);
 
     void deleteFile(Integer[] ids);
-//    int importData(String filePath) throws Exception;
+    int importData(String filePath) throws Exception;
 }

@@ -31,5 +31,3 @@ src/main/resources/oasys.sql
 ![消息通知页面](screenshot/消息通知.png)
 #### 聊天室
 ![聊天室页面](screenshot/聊天室.png)
-
-java -jar xx.jar --spring.config.location="path to config"

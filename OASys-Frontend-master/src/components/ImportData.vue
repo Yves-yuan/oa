@@ -3,14 +3,14 @@
         <el-form :inline="true">
             <el-form-item>
                 <el-button-group>
-                    <el-button type="primary" icon="el-icon-upload" @click="uploadFile" plain>上传文件</el-button>
+                    <el-button type="primary" icon="el-icon-upload" @click="uploadFile" plain>upload</el-button>
                 </el-button-group>
             </el-form-item>
         </el-form>
         <el-card class="box-card" body-style="{padding: '20px' }">
             <div slot="header" class="clearfix">
-                <span>操作面板</span>
-                <el-button style="float: right; padding: 3px 0" type="text" @click="handleAddGoods(true)">新增数据
+                <span>option</span>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="handleAddGoods(true)">add
                 </el-button>
             </div>
             <el-form label-width="auto"
@@ -19,7 +19,7 @@
                     <el-col :span="8">
                         <el-form-item label="tagid:">
                             <el-input
-                                    placeholder="输入tagid搜索"
+                                    placeholder="input tagid"
                                     v-model="searchParams.tagid">
                             </el-input>
                         </el-form-item>
@@ -27,7 +27,7 @@
                     <el-col :span="8">
                         <el-form-item label=" Manufacturer part number:">
                             <el-input label="Manufacturer part number："
-                                      placeholder="请输入Manufacturer part number"
+                                      placeholder="input Manufacturer part number"
                                       v-model="searchParams.manufacturerPartNumber">
                             </el-input>
                         </el-form-item>
@@ -39,7 +39,7 @@
                     <el-col :span="8">
                         <el-form-item label="Description:">
                             <el-input label="Description："
-                                      placeholder="请输入Description"
+                                      placeholder="Description"
                                       v-model="searchParams.description">
                             </el-input>
                         </el-form-item>
@@ -47,7 +47,7 @@
                     <el-col :span="8">
                         <el-form-item label="Component Type:">
                             <el-input label="Component Type："
-                                      placeholder="请输入Component Type"
+                                      placeholder="Component Type"
                                       v-model="searchParams.componentType">
                             </el-input>
                         </el-form-item>
@@ -55,10 +55,10 @@
                 </el-row>
                 <el-row :gutter="24" style="float: right;padding-bottom: 20px">
                     <el-col :span="1.5">
-                        <el-button type="primary" @click="handleGetGoods()">查询</el-button>
+                        <el-button type="primary" @click="handleGetGoods()">search</el-button>
                     </el-col>
                     <el-col :span="1.5">
-                        <el-button type="primary" @click="handleExportGoods()">导出</el-button>
+                        <el-button type="primary" @click="handleExportGoods()">export</el-button>
                     </el-col>
                     <el-col :span="1.5">
                         <el-button type="warning" @click="handleDeleteAllGoods()">delete all</el-button>
@@ -107,8 +107,18 @@
                     align="center">
             </el-table-column>
             <el-table-column
+                    prop="date"
+                    label="date"
+                    align="center">
+            </el-table-column>
+            <el-table-column
                     prop="stockQty"
                     label="stock qty"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="price"
+                    label="price"
                     align="center">
             </el-table-column>
             <el-table-column
@@ -126,6 +136,7 @@
                     label="lead time"
                     align="center">
             </el-table-column>
+
             <el-table-column
                     label="操作"
                     align="center"
@@ -133,10 +144,10 @@
                     fixed="right">
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini"
-                               @click="handleEdit(scope.row)">编辑
+                               @click="handleEdit(scope.row)">edit
                     </el-button>
                     <el-button type="danger" size="mini"
-                               @click="deleteGoods(scope.row)">删除
+                               @click="deleteGoods(scope.row)">del
                     </el-button>
                 </template>
             </el-table-column>
@@ -173,10 +184,16 @@
                     <el-input v-model="goodsToEdit.manufacturerPartNumber"/>
                 </el-form-item>
                 <el-form-item label="description" prop="description">
-                    <el-input type="textarea" v-model="goodsToEdit.description"/>
+                    <el-input type="textarea"  v-model="goodsToEdit.description"/>
+                </el-form-item>
+                <el-form-item label="date" prop="date">
+                    <el-input v-model="goodsToEdit.date"/>
                 </el-form-item>
                 <el-form-item label="stockQty" prop="stockQty">
                     <el-input v-model="goodsToEdit.stockQty"/>
+                </el-form-item>
+                <el-form-item label="price" prop="price">
+                    <el-input type="number" v-model="goodsToEdit.price"/>
                 </el-form-item>
                 <el-form-item label="annualStock" prop="annualStock">
                     <el-input v-model="goodsToEdit.annualStock"/>
@@ -190,10 +207,10 @@
             </el-form>
             <div class="dialog-footer" slot="footer">
                 <el-button @click="editDialogVisible = false">
-                    取消
+                    cancel
                 </el-button>
                 <el-button @click="updateGoods" type="primary">
-                    确认
+                    ok
                 </el-button>
             </div>
         </el-dialog>
@@ -218,8 +235,14 @@
                 <el-form-item label="description" prop="description">
                     <el-input type="textarea" v-model="goodsToAdd.description"/>
                 </el-form-item>
+                <el-form-item label="date" prop="date">
+                    <el-input v-model="goodsToAdd.date"/>
+                </el-form-item>
                 <el-form-item label="stockQty" prop="stockQty">
                     <el-input v-model="goodsToAdd.stockQty"/>
+                </el-form-item>
+                <el-form-item label="price" prop="price">
+                    <el-input v-model="goodsToAdd.price"/>
                 </el-form-item>
                 <el-form-item label="annualStock" prop="annualStock">
                     <el-input v-model="goodsToEdit.annualStock"/>
@@ -233,17 +256,17 @@
             </el-form>
             <div class="dialog-footer" slot="footer">
                 <el-button @click="editDialogVisible = false">
-                    取消
+                    cancel
                 </el-button>
                 <el-button @click="addGoods" type="primary">
-                    确认
+                    ok
                 </el-button>
             </div>
         </el-dialog>
         <el-dialog :visible.sync="uploadFileDialog" width="26%">
             <el-upload ref="upload"
                        :file-list="flist"
-                       drag action="/api/importGoods" multiple :data={}
+                    drag action="/api/importData" multiple :data={}
                        :on-success="uploadSuccess">
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">pull file here,or<em>click upload</em></div>
@@ -253,14 +276,14 @@
 </template>
 
 <script>
-    import {addGoods, getGoods, updateGoods, deleteGoods, exportGoods, deleteAllGoods} from "../utils/api";
+    import {addGoods, getGoods, updateGoods, deleteGoods,exportGoods,deleteAllGoods} from "../utils/api";
     import {mapState} from "vuex";
 
     export default {
         name: "ImportData",
         data() {
             return {
-                flist: [],
+                flist:[],
                 goodsList: [],
                 goodsToEdit: {},
                 goodsToAdd: {},
@@ -270,55 +293,56 @@
                 renameFileDialog: false,
                 editDialogVisible: false,
                 addDialogVisible: false,
+                currentPage4:1,
                 searchParams: {},
                 rules: {
                     tagid: [
                         {
                             type: "number",
                             required: true,
-                            message: "请输入数字tagid",
+                            message: "input number tagid",
                             trigger: "blur"
                         }
                     ],
                     componentType: [
                         {
                             max: 100,
-                            message: "长度不超过100",
+                            message: "max length 100",
                             trigger: "blur"
                         }
                     ],
                     subType: [
                         {
                             max: 100,
-                            message: "长度不超过100",
+                            message: "max length 100",
                             trigger: "blur"
                         }
                     ],
                     manufacturer: [
                         {
                             max: 255,
-                            message: "长度不超过255",
+                            message: "max length 255",
                             trigger: "blur"
                         }
                     ],
                     manufacturerPartNumber: [
                         {
                             max: 255,
-                            message: "长度不超过255",
+                            message: "max length 255",
                             trigger: "blur"
                         }
                     ],
                     description: [
                         {
                             max: 512,
-                            message: "长度不超过512",
+                            message: "max length 255",
                             trigger: "blur"
                         }
                     ],
                     stock_qty: [
                         {
                             max: 255,
-                            message: "长度不超过255",
+                            message: "max length 255",
                             trigger: "blur"
                         }
                     ],
@@ -342,7 +366,7 @@
                     if (response && response.status === "success") {
                         this.$message.success(response.message)
                         this.addDialogVisible = false
-                        this.goodsToAdd = {}
+                        this.goodsToAdd={}
                         this.handleGetGoods()
                     }
                 })
@@ -352,7 +376,7 @@
                 this.editDialogVisible = true;
             },
             deleteGoods(row) {
-                this.$confirm("永久删除这些数据, 是否继续?")
+                this.$confirm("delete , continue?")
                     .then(() => {
                         let ids = [row.id];
                         deleteGoods(ids).then(response => {
@@ -372,14 +396,14 @@
                 })
             },
             handleExportGoods() {
-                exportGoods(this.searchParams, 'data.xls');
+                exportGoods(this.searchParams,'data.xls');
             },
             handleDeleteAllGoods() {
-                deleteAllGoods().then(response => {
+                deleteAllGoods().then(response=>{
                     if (response && response.status === "success") {
                         this.$message.success(response.message)
                         this.handleGetGoods()
-                    } else {
+                    }else{
                         this.$message.error(response.message)
                     }
                 });
@@ -402,7 +426,7 @@
                 this.uploadFileDialog = false
                 this.$refs.upload.clearFiles()
             },
-            handlePageSizeChange(pageSize) {
+            handlePageSizeChange(pageSize){
                 this.searchParams.pageSize = pageSize;
                 this.handleGetGoods();
             },

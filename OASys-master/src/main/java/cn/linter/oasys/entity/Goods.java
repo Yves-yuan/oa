@@ -3,6 +3,7 @@ package cn.linter.oasys.entity;
 import org.apache.ibatis.type.Alias;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Alias("Goods")
 public class Goods implements Serializable {
@@ -13,10 +14,28 @@ public class Goods implements Serializable {
     private String manufacturer;
     private String manufacturerPartNumber;
     private String description;
+    private String date;
     private String stockQty;
     private String annualStock;
     private String autoReplenishRate;
     private String leadTime;
+    private BigDecimal price;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
 
     public String getAnnualStock() {
         return annualStock;

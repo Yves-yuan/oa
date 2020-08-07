@@ -13,30 +13,15 @@ import AskLeave from "../views/AskLeave";
 import CheckLeave from "../views/CheckLeave";
 import AddUser from "../views/AddUser";
 import User from "../views/User";
+import NotFound from "../views/NotFound";
 import Goods from "../views/Goods";
 import Flight from "../views/Flight";
 import Flightsearch from "../views/FlightSearch";
-import TrainTicket from "../views/TrainTicket";
-import TrainTicketOrder from "../views/TrainTicketOrder";
-import TrainTicketSearch from "../views/TrainTicketSearch";
-import GuestIndex from "../views/GuestIndex";
-import Guest from "../layout/Guest";
-
+import LookData from "../views/AlpLookUp";
 
 Vue.use(VueRouter);
 
 const routes = [
-	{
-        path: "/guest",
-        component: Guest,
-        children: [
-            {
-                path: "",
-                name: "guest-index",
-                component: GuestIndex,
-            }
-        ]
-    },
     {
         path: "/",
         component: Admin,
@@ -107,19 +92,9 @@ const routes = [
                 component: Flightsearch,
             },
             {
-                path: "/trainTicket",
-                name: "trainTicket",
-                component: TrainTicket,
-            },
-            {
-                path: "/trainTicketOrder",
-                name: "trainTicketOrder",
-                component: TrainTicketOrder,
-            },
-            {
-                path: "/trainTicketSearch",
-                name: "trainTicketSearch",
-                component: TrainTicketSearch,
+                path: "/lookgoods",
+                name: "lookgoods",
+                component: LookData,
             },
 
         ]
@@ -131,7 +106,7 @@ const routes = [
     },
     {
         path: "*",
-        component: GuestIndex
+        component: NotFound
     }
 ];
 
@@ -141,19 +116,13 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    if (to.name.startsWith("guest")){
-        next();
-    }
     if (store.state.auth || to.name == "login") {
         next();
     } else if (from.name == "login" && to.name == "index") {
         next();
     } else {
-        router.push({name: "guest-index"});
+        router.push({name: "login"});
     }
 });
-const originalPush = VueRouter.prototype.push;
-VueRouter.prototype.push = function push(location) {
-    return originalPush.call(this, location).catch(err => err);
-};
+
 export default router;

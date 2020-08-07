@@ -520,4 +520,11 @@
 </script>
 
 <style scoped>
+    .path {
+        float: right
+    }
+
+    .search {
+        float: right
+    }
 </style>

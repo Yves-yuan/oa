@@ -38,7 +38,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService{
     }
 
     public int importHospitalDepartment(String filePath) throws Exception {
-        List<Map<String,Object>> list = ExcelUtils.importExcel(filePath,arr,null);
+        List<Map<String,Object>> list = ExcelUtils.importExcel(filePath,arr);
         return hospitalDepartmentMapper.insertHospitalDepartmentList(list);
     }
 

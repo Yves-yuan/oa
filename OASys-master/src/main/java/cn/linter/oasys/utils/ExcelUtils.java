@@ -15,6 +15,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class ExcelUtils {
     /**
@@ -86,7 +87,9 @@ public class ExcelUtils {
         }
 
     }
-
+    public static List<Map<String,Object>> importExcel(String fileName,  String[] columnNames){
+        return null;
+    }
     private static String transCellType(Object value) {
         String str = null;
         if (value instanceof Date) {

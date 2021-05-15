@@ -2,7 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.linter.oasys.mapper.GoodsMapper">
     <resultMap id="GoodsResultMap" type="Goods">
-        <id property="id" column="id"/>
         <result property="tagid" column="tagid"/>
         <result property="componentType" column="component_type"/>
         <result property="subType" column="sub_type"/>
@@ -10,27 +9,36 @@
         <result property="manufacturerPartNumber" column="manufacturer_part_number"/>
         <result property="description" column="description"/>
         <result property="stockQty" column="stock_qty"/>
-        <result property="annualStock" column="annual_stock"/>
         <result property="autoReplenishRate" column="auto_replenish_rate"/>
         <result property="leadTime" column="lead_time"/>
         <result property="price" column="price"/>
+        <result property="notes" column="notes"/>
     </resultMap>
 
     <insert id="insertGoodsList" parameterType="java.util.List">
-        insert into goods (tagid,component_type,sub_type,manufacturer,manufacturer_part_number,description,stock_qty,
-        annual_stock,auto_replenish_rate,lead_time,price,date)
+        insert into goods (
+        tagid,
+        component_type,
+        sub_type,
+        manufacturer,
+        manufacturer_part_number,
+        description,
+        stock_qty,
+        auto_replenish_rate,lead_time,price,date,notes)
         values
         <foreach collection="list" item="item" index="index" separator=",">
             (#{item.tagid},#{item.componenttype},#{item.sub-type},
             #{item.manufacturer},#{item.manufacturerpartnumber},#{item.description},#{item.stockqty},
-            #{item.annualstock},#{item.autoreplenishrate},#{item.leadtime},#{item.price},#{item.date})
+            #{item.autoreplenishrate},#{item.leadtime},#{item.price},#{item.date},#{item.notes}
+            )
         </foreach>
     </insert>
     <insert id="insertGoods" parameterType="Goods">
         insert into goods (tagid,component_type,sub_type,manufacturer,manufacturer_part_number,description,stock_qty,
-        annual_stock,auto_replenish_rate,lead_time)
+        auto_replenish_rate,lead_time,notes)
         values (#{tagid},#{componentType},#{subType},
-        #{manufacturerPartNumber},#{manufacturerPartNumber},#{description},#{stockQty},#{annualStock},#{autoReplenishRate},#{leadTime})
+        #{manufacturer},#{manufacturerPartNumber},#{description},#{stockQty},
+        #{autoReplenishRate},#{leadTime},#{notes})
     </insert>
 
     <update id="updateGoods">
@@ -43,10 +51,10 @@
             <if test="manufacturerPartNumber != null">manufacturer_part_number=#{manufacturerPartNumber},</if>
             <if test="description != null">description=#{description},</if>
             <if test="stockQty != null">stock_qty=#{stockQty},</if>
-            <if test="annualStock != null">annual_stock=#{annualStock},</if>
             <if test="autoReplenishRate != null">auto_replenish_rate=#{autoReplenishRate},</if>
             <if test="leadTime != null">lead_time=#{leadTime},</if>
             <if test="price != null">price=#{price},</if>
+            <if test="notes != null">notes=#{notes},</if>
         </trim>
         where id = #{id}
     </update>
@@ -59,15 +67,21 @@
     </delete>
 
     <delete id="deleteAllGoods">
-        truncate goods
+        delete from goods
 
     </delete>
 
-
+    <select id="selectGoodsByPartNumber" resultMap="GoodsResultMap">
+        select *
+        from goods
+        where `manufacturer_part_number`= "${manufacturerPartNumbers}"
+    </select>
 
     <select id="selectGoods"  parameterType="hashmap" resultMap="GoodsResultMap">
         select *
-        from goods
+        from goods a join
+        (select `manufacturer_part_number`,sum(stock_qty) as sum_stockQty from goods group by `manufacturer_part_number`) b
+        on a.`manufacturer_part_number`=b.`manufacturer_part_number`
         where 1=1
         <if test="tagid != null and tagid != ''">
             and (locate(#{tagid},tagid)>0 or locate(tagid,#{tagid})>0)
@@ -90,8 +104,38 @@
         <if test="stockQty != null and stockQty != ''">
             and (locate(#{stockQty},stock_qty)>0 or locate(stock_qty,#{stockQty})>0)
         </if>
+        <if test="stockQty != null and stockQty != ''">
+            and  b.sum_stockQty &lt;= #{stockQty}
+        </if>
     </select>
-
+    <select id="selectWarningGoods"  parameterType="hashmap" resultMap="GoodsResultMap">
+        select a.*,rank() over (order by manufacturer_part_number) as `rank`
+        from goods a join
+        (select `manufacturer_part_number`,sum(stock_qty) as sum_stockQty from goods group by `manufacturer_part_number`) b
+        on a.`manufacturer_part_number`=b.`manufacturer_part_number`
+        where 1=1  and  b.sum_stockQty &lt;= a.auto_replenish_rate
+        <if test="tagid != null and tagid != ''">
+            and (locate(#{tagid},tagid)>0 or locate(tagid,#{tagid})>0)
+        </if>
+        <if test="componentType != null and componentType != ''">
+            and (locate(#{componentType},component_type)>0 or locate(component_type,#{componentType})>0)
+        </if>
+        <if test="subType != null and subType != ''">
+            and (locate(#{subType},sub_type)>0 or locate(sub_type,#{subType})>0)
+        </if>
+        <if test="manufacturer != null and manufacturer != ''">
+            and (locate(#{manufacturer},manufacturer)>0 or locate(manufacturer,#{manufacturer})>0)
+        </if>
+        <if test="manufacturerPartNumber != null and manufacturerPartNumber != ''">
+            and (locate(#{manufacturerPartNumber},manufacturer_part_number)>0 or locate(manufacturer_part_number,#{manufacturerPartNumber})>0)
+        </if>
+        <if test="description != null and description != ''">
+            and (locate(#{description},description)>0 or locate(description,#{description})>0)
+        </if>
+        <if test="stockQty != null and stockQty != ''">
+            and (locate(#{stockQty},stock_qty)>0 or locate(stock_qty,#{stockQty})>0)
+        </if>
+    </select>
     <select id="selectGoodsById" resultMap="GoodsResultMap">
         select *
         from goods

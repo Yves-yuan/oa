@@ -1,11 +1,11 @@
 package cn.linter.oasys.service;
 
 import cn.linter.oasys.entity.File;
-import cn.linter.oasys.entity.Goods;
 import cn.linter.oasys.entity.User;
 import cn.linter.oasys.mapper.FileMapper;
 import cn.linter.oasys.mapper.GoodsMapper;
 import cn.linter.oasys.utils.ExcelColumnIndex;
+import cn.linter.oasys.utils.ExcelUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -96,98 +96,97 @@ public class FileServiceImpl implements FileService {
         List<ExcelColumnIndex> ecis = new ArrayList<>();
         for (String x : columns) {
             for (int j = 0; j < columnNum; j++) {
-                String cellData = (String) getCellFormatValue(row.getCell(j));
+                String cellData = (String) ExcelUtils.getCellFormatValue(row.getCell(j));
                 if (x.toLowerCase().equals(cellData.toLowerCase())) {
-                    ecis.add(new ExcelColumnIndex(x.toLowerCase(), j));
+                    ecis.add(new ExcelColumnIndex(x.toLowerCase(), x.toLowerCase(), j));
                 }
             }
         }
-        for (int i = 1; i < rownum; i++) {
-            Map<String, Object> map = new LinkedHashMap<>();
-            row = sheet.getRow(i);
-            if (row != null) {
-                for (ExcelColumnIndex e : ecis) {
-                    String columnName = e.getColumnName();
-                    Object cellData;
-                    if (columnName.equals("date")) {
-                        Cell cell = row.getCell(e.getColumnIndex());
-                        if (cell != null) {
-                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                            cellData = format.format(row.getCell(e.getColumnIndex()).getDateCellValue());
-                        } else {
-                            cellData = "";
-                        }
+        try {
+            for (int i = 1; i < rownum; i++) {
+                Map<String, Object> map = new LinkedHashMap<>();
+                row = sheet.getRow(i);
+                if (row != null) {
+                    for (ExcelColumnIndex e : ecis) {
+                        String columnName = e.getExcelColumnName();
+                        Object cellData;
+                        if (columnName.equals("date")) {
+                            Cell cell = row.getCell(e.getColumnIndex());
+                            if (cell != null) {
+                                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+//                            cellData = format.format(row.getCell(e.getColumnIndex()).getDateCellValue());
+                                Date a = row.getCell(e.getColumnIndex()).getDateCellValue();
+                                cellData = new Timestamp(a.getTime());
+                            } else {
+                                cellData = new Timestamp(System.currentTimeMillis());
+                            }
 
-                    } else {
-                        cellData = getCellFormatValue(row.getCell(e.getColumnIndex()));
-                    }
-                    if (columnName.equals("price")) {
-                        String cs = (String) cellData;
-                        try {
-                            BigDecimal b = new BigDecimal(cs);
-                            cellData = b;
-                        } catch (Exception ex) {
-                            cellData = null;
+                        } else {
+                            cellData = ExcelUtils.getCellFormatValue(row.getCell(e.getColumnIndex()));
                         }
+                        if (columnName.equals("price")) {
+                            String cs = (String) cellData;
+                            try {
+                                BigDecimal b = new BigDecimal(cs);
+                                cellData = b;
+                            } catch (Exception ex) {
+                                cellData = 0.0;
+                            }
+                        }
+                        map.put(columnName.replace(" ", ""), cellData);
                     }
-                    map.put(columnName.replace(" ", ""), cellData);
+                } else {
+                    break;
                 }
-            } else {
-                break;
+                putDefaultInt(map, "stockqty");
+                putDefaultInt(map, "autoreplenishrate");
+                list.add(map);
             }
-            list.add(map);
+        }catch (Exception e){
+
         }
-//        List<Goods> gs = new ArrayList<>();
-//        for (Map<String, Object> map : list) {
-//            Goods g = new Goods();
-//            g.setTagid(map.get("tagid"));
-//            g.setComponentType(map.get("component type"));
-//            g.setSubType(map.get("sub-type"));
-//            g.setManufacturer(map.get("manufacturer"));
-//            g.setManufacturerPartNumber(map.get("manufacturer part number"));
-//            g.setDescription(map.get("description"));
-//            g.setStockQty(map.get("stock qty"));
-//            g.setAnnualStock(map.get("annual stock"));
-//            g.setAutoReplenishRate(map.get("auto replenish rate"));
-//            g.setLeadTime(map.get("lead time"));
-//            g.setPrice(map.get("price"));
-//            gs.add(g);
-//        }
         return goodsMapper.insertGoodsList(list);
     }
-
-    public Object getCellFormatValue(Cell cell) {
-        Object cellValue = null;
-        if (cell != null) {
-            //判断cell类型
-            switch (cell.getCellType()) {
-                case Cell.CELL_TYPE_NUMERIC: {
-                    cellValue = String.valueOf(cell.getNumericCellValue());
-                    break;
-                }
-                case Cell.CELL_TYPE_FORMULA: {
-                    //判断cell是否为日期格式
-                    if (DateUtil.isCellDateFormatted(cell)) {
-                        //转换为日期格式YYYY-mm-dd
-                        cellValue = cell.getDateCellValue();
-                    } else {
-                        //数字
-                        cellValue = String.valueOf(cell.getNumericCellValue());
-                    }
-                    break;
-                }
-                case Cell.CELL_TYPE_STRING: {
-                    cellValue = cell.getRichStringCellValue().getString();
-                    break;
-                }
-                default:
-                    cellValue = "";
-            }
-        } else {
-            cellValue = "";
+    private void putDefaultInt(Map<String, Object> map,String name){
+        try{
+            map.put(name,(int)Double.parseDouble(map.get(name).toString()));
+        }catch (Exception e){
+//            e.printStackTrace();
+            map.put(name,0);
         }
-        return cellValue;
     }
+//    public Object getCellFormatValue(Cell cell) {
+//        Object cellValue = null;
+//        if (cell != null) {
+//            //判断cell类型
+//            switch (cell.getCellType()) {
+//                case Cell.CELL_TYPE_NUMERIC: {
+//                    cellValue = String.valueOf(cell.getNumericCellValue());
+//                    break;
+//                }
+//                case Cell.CELL_TYPE_FORMULA: {
+//                    //判断cell是否为日期格式
+//                    if (DateUtil.isCellDateFormatted(cell)) {
+//                        //转换为日期格式YYYY-mm-dd
+//                        cellValue = cell.getDateCellValue();
+//                    } else {
+//                        //数字
+//                        cellValue = String.valueOf(cell.getNumericCellValue());
+//                    }
+//                    break;
+//                }
+//                case Cell.CELL_TYPE_STRING: {
+//                    cellValue = cell.getRichStringCellValue().getString();
+//                    break;
+//                }
+//                default:
+//                    cellValue = "";
+//            }
+//        } else {
+//            cellValue = "";
+//        }
+//        return cellValue;
+//    }
 
     @Override
     public void renameFile(int id, String newName) {

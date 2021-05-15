@@ -3,6 +3,7 @@ package cn.linter.oasys.utils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +16,8 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ExcelUtils {
     /**
@@ -57,9 +59,13 @@ public class ExcelUtils {
             row = sheet.createRow(i + 1);
             //如果是第一行就让其为标题行
             Object targetObj = datalist.get(i);
+            int columnIndex = 0;
             for (int j = 0; j < fields.length; j++) {
+                if (fields[j].getAnnotation(AnnotationNotExport.class) != null){
+                    continue;
+                }
                 //创建列
-                Cell cell = row.createCell(j);
+                Cell cell = row.createCell(columnIndex);
                 cell.setCellType(CellType.STRING);
                 //
                 try {
@@ -70,6 +76,7 @@ public class ExcelUtils {
                 } catch (InvocationTargetException e) {
                     e.printStackTrace();
                 }
+                columnIndex++;
             }
         }
         response.setContentType("application/octet-stream");
@@ -87,10 +94,54 @@ public class ExcelUtils {
         }
 
     }
-    public static List<Map<String,Object>> importExcel(String fileName,  String[] columnNames){
-        return null;
+    public static Object getCellFormatValue(Cell cell) {
+        Object cellValue = null;
+        if (cell != null) {
+            //判断cell类型
+            switch (cell.getCellType()) {
+                case Cell.CELL_TYPE_NUMERIC: {
+                    cellValue = String.valueOf(cell.getNumericCellValue());
+                    break;
+                }
+                case Cell.CELL_TYPE_FORMULA: {
+                    try {
+                        //判断cell是否为日期格式
+                        if (DateUtil.isCellDateFormatted(cell)) {
+                            //转换为日期格式YYYY-mm-dd
+                            cellValue = cell.getDateCellValue();
+                        } else {
+                            //数字
+                            cellValue = String.valueOf(cell.getNumericCellValue());
+                        }
+                    }catch (Exception e){
+                        cellValue = cell.getStringCellValue();
+                    }
+                    break;
+                }
+                case Cell.CELL_TYPE_STRING: {
+                    cellValue = cell.getRichStringCellValue().getString();
+                    break;
+                }
+                default:
+                    cellValue = "";
+            }
+        } else {
+            cellValue = "";
+        }
+        try{
+            String regexFormat = "^([0-9]*)\\.0$";
+            Pattern o = Pattern.compile(regexFormat);
+            Matcher m = o.matcher(cellValue.toString());
+            if (m.matches()){
+                String tmp = m.group(1);
+                cellValue = tmp;
+            }
+        }catch (Exception e){
+
+        }
+        return cellValue;
     }
-    private static String transCellType(Object value) {
+    public static String transCellType(Object value) {
         String str = null;
         if (value instanceof Date) {
             Date date = (Date) value;

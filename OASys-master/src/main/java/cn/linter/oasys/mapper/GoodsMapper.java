@@ -13,8 +13,10 @@ public interface GoodsMapper {
     int insertGoodsList(List<Map<String,Object>> goods);
     int insertGoods(Goods goods);
     List<Goods> selectGoods(HashMap<String,Object> m);
-    Goods selectGoodsByID(@Param("id") int id);
+    List<Goods> selectWarningGoods(HashMap<String,Object> m);
+    Goods selectGoodsById(@Param("id") Integer id);
+    List<Goods> selectGoodsByPartNumber(@Param("manufacturerPartNumbers") String manufacturerPartNumbers);
     int updateGoods(Goods goods);
-    void deleteGoods(@Param("ids") Integer[] ids);
+    void deleteGoods(@Param("ids") String[] ids);
     int deleteAllGoods();
 }

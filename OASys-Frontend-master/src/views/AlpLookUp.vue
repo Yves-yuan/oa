@@ -58,12 +58,15 @@
                         <el-button type="primary" @click="handleGetGoods()">search</el-button>
                     </el-col>
                     <el-col :span="1.5">
+                        <el-button type="primary" @click="handleGetWarningGoods()">{{warningContent}}</el-button>
+                    </el-col>
+                    <el-col :span="1.5">
                         <el-button type="primary" @click="handleExportGoods()">export</el-button>
                     </el-col>
                 </el-row>
             </el-form>
         </el-card>
-        <el-table border :data="goodsList" ref="multipleTable"
+        <el-table border :data="goodsList" ref="multipleTable" :row-style="changeColor"
                   style="width: 100%">
             <el-table-column
                     prop="id"
@@ -111,11 +114,6 @@
             <el-table-column
                     prop="stockQty"
                     label="stock qty"
-                    align="center">
-            </el-table-column>
-            <el-table-column
-                    prop="annualStock"
-                    label="annual stock"
                     align="center">
             </el-table-column>
             <el-table-column
@@ -261,13 +259,15 @@
 </template>
 
 <script>
-    import {addGoods, getGoods, updateGoods, deleteGoods,exportGoods} from "../utils/api";
+    import {addGoods, getGoods, updateGoods, deleteGoods, exportGoods, getWarningGoods} from "../utils/api";
     import {mapState} from "vuex";
 
     export default {
         name: "LookData",
         data() {
             return {
+                warningContent:'warning',
+                warning:false,
                 goodsList: [],
                 goodsToEdit: {},
                 goodsToAdd: {},
@@ -342,6 +342,16 @@
             ...mapState(["auth"])
         },
         methods: {
+            changeColor(row){
+                let colors = ['#CCFF33','#CCFF99','#66CC33','#99FFFF','#CCFFFF','#FFCCCC','#FFFFFF','white']
+                var r = row.row.rank
+                window.console.log(JSON.stringify(row))
+                let i = r % 7
+                let color = colors[i]
+
+                return { "background-color": color }
+            },
+
             handleAddGoods() {
                 this.addDialogVisible = true;
             },
@@ -372,12 +382,30 @@
                     })
             },
             handleGetGoods() {
-                getGoods(this.searchParams).then(response => {
-                    if (response && response.status === "success") {
-                        this.total = response.total
-                        this.goodsList = response.object
-                    }
-                })
+                if (this.warning === true){
+                    getWarningGoods(this.searchParams).then(response => {
+                        if (response && response.status === "success") {
+                            this.total = response.total
+                            this.goodsList = response.object
+                        }
+                    })
+                }else{
+                    getGoods(this.searchParams).then(response => {
+                        if (response && response.status === "success") {
+                            this.total = response.total
+                            this.goodsList = response.object
+                        }
+                    })
+                }
+            },
+            handleGetWarningGoods() {
+                this.warning = !this.warning;
+                if (this.warning){
+                    this.warningContent = 'cancel warning'
+                }else{
+                    this.warningContent = 'warning'
+                }
+                this.handleGetGoods();
             },
             handleExportGoods() {
                 exportGoods(this.searchParams,'data.xls');

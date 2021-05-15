@@ -10,10 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 @RestController
 @RequestMapping("/api")
@@ -34,12 +30,14 @@ public class GoodsController {
         return new Response("success", "添加成功！");
     }
 
+
     @PostMapping("/deleteAllGoods")
     public Response deleteAllGoods() {
         try {
             int result = goodsService.deleteAllGoods();
             return new Response("success", "删除成功");
         } catch (Exception e) {
+            e.printStackTrace();
             return new Response("error", "删除失败！");
         }
 
@@ -55,8 +53,22 @@ public class GoodsController {
         //调用Excel导出工具类
         //客户需要所有数据导出
         ExcelUtils.export(response, goodsService.getGoods(1, Integer.MAX_VALUE, null, null,
-                null, null).getList(), GoodsServiceImpl.arr);
+                null, null, Integer.MAX_VALUE).getList(), GoodsServiceImpl.arr);
         return "success";
+    }
+
+    @GetMapping("/getWarningGoods")
+    public Response getWarningGoods(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber,
+                                    @RequestParam(value = "pageSize", defaultValue = "8") int pageSize,
+                                    String tagid,
+                                    String manufacturerPartNumber,
+                                    String description,
+                                    String stockQty,
+                                    Integer number
+    ) {
+        PageInfo<?> pageInfo = goodsService.getWarningGoods(pageNumber, pageSize, tagid, manufacturerPartNumber,
+                description, stockQty, number);
+        return new Response("success", pageInfo.getTotal(), pageInfo.getList());
     }
 
     @GetMapping("/getGoods")
@@ -65,10 +77,11 @@ public class GoodsController {
                              String tagid,
                              String manufacturerPartNumber,
                              String description,
-                             String stockQty
+                             String stockQty,
+                             Integer number
     ) {
         PageInfo<?> pageInfo = goodsService.getGoods(pageNumber, pageSize, tagid, manufacturerPartNumber,
-                description, stockQty);
+                description, stockQty, number);
         return new Response("success", pageInfo.getTotal(), pageInfo.getList());
     }
 
@@ -82,7 +95,7 @@ public class GoodsController {
     }
 
     @PostMapping("/deleteGoods")
-    public Response deleteGoods(@RequestBody Integer[] ids) {
+    public Response deleteGoods(@RequestBody String[] ids) {
         goodsService.deleteGoods(ids);
         return new Response("success", "删除成功！");
     }

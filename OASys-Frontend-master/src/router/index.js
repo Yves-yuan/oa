@@ -15,6 +15,7 @@ import AddUser from "../views/AddUser";
 import User from "../views/User";
 import NotFound from "../views/NotFound";
 import Goods from "../views/Goods";
+import GoodsPacking from "../views/GoodsPacking";
 import Flight from "../views/Flight";
 import Flightsearch from "../views/FlightSearch";
 import LookData from "../views/AlpLookUp";
@@ -80,6 +81,11 @@ const routes = [
                 path: "/goods",
                 name: "goods",
                 component: Goods,
+            },
+            {
+                path: "/goodsPacking",
+                name: "goodsPacking",
+                component: GoodsPacking,
             },
             {
                 path: "/flight",

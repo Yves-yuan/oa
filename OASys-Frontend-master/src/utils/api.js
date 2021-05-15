@@ -98,20 +98,43 @@ export function addGoods(params) {
 export function getGoods(params) {
     return get("/api/getGoods", params);
 }
+export function getWarningGoods(params) {
+    return get("/api/getWarningGoods", params);
+}
 export function exportGoods(params,filename) {
     return download("post","/api/exportGoods", params,filename);
 }
 export function deleteAllGoods(data) {
     return post("/api/deleteAllGoods", data);
 }
-export function updateGoods(data) {
-    return post("/api/updateGoods", data);
-}
-
 export function deleteGoods(data) {
     return post("/api/deleteGoods", data);
 }
+export function updateGoods(data) {
+    return post("/api/updateGoods", data);
+}
+// goods order
 
+export function updateGoodsOrder(data) {
+    return post("/goodsOrdering/update", data);
+}
+export function addOrdering(data){
+    return post("/goodsOrdering/addOrdering", data);
+}
+export function getGoodsOrder(params) {
+    return get("/goodsOrdering/getGoodsOrdering", params);
+}
+
+export function exportGoodsOrder(params,filename) {
+    return download("post","/goodsOrdering/exportGoodsOrdering", params,filename);
+}
+
+export function deleteGoodsOrder(data) {
+    return post("/goodsOrdering/delete", data);
+}
+export function deleteAllGoodsOrder(data) {
+    return post("/goodsOrdering/deleteAll", data);
+}
 
 
 export function addFlight(params) {

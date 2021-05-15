@@ -227,25 +227,42 @@ INSERT INTO `user` VALUES (16, '管理员', '$2a$10$8aCXT4BWn17MEZ38hyGyQe5C3hS/
 
 SET FOREIGN_KEY_CHECKS = 1;
 
-
+DROP TABLE IF EXISTS `goods_ordering`;
 DROP TABLE IF EXISTS `goods`;
 CREATE TABLE `goods`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `id` int AUTO_INCREMENT ,
   `tagid` int(0) NOT NULL ,
-  `component_type` varchar(100)  ,
+  `component_type` varchar(100) ,
   `sub_type` varchar(100)  ,
   `manufacturer` varchar(255)  ,
   `manufacturer_part_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci ,
   `description` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci ,
-  `date` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci ,
-  `stock_qty` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `date` TIMESTAMP ,
+  `stock_qty` int,
   `annual_stock` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `auto_replenish_rate` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `auto_replenish_rate` int,
   `lead_time` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `price` DECIMAL,
+  `price` DECIMAL(10,6),
+  `notes` varchar(255),
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX  index_tagid  (tagid),
-  INDEX  index_manufacturer_part_number  (manufacturer_part_number)
+  INDEX  index_tagid  (tagid)
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+
+
+CREATE TABLE `goods_ordering`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `goodsPartNumber` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL ,
+  `goodsId` int  NOT NULL ,
+  `itemNo` int ,
+  `desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  ,
+  `qtyShipped` int   ,
+  `unitPrice` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci   ,
+  `extendedPrice` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci   ,
+  `customerPo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci   ,
+  `project` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci   ,
+  `shipmentDate` TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 DROP TABLE IF EXISTS `flight`;

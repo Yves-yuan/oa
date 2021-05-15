@@ -16,14 +16,15 @@ public class GoodsServiceImpl implements GoodsService{
         this.goodsMapper = goodsMapper;
     }
     @Override
-    public Goods getGoodsById(int id) {
-        return goodsMapper.selectGoodsByID(id);
+    public Goods getGoodsById(Integer id) {
+        return goodsMapper.selectGoodsById(id);
     }
-    public static String[] arr = new String[]{"id","tagid", "component type","sub-type","manufacturer",
-            "manufacturer part number", "description","stock qty","annual stock","auto replenish rate",
-            "lead time","price","date"};
+    public static String[] arr = new String[]{"tagid", "component type","sub-type","manufacturer",
+            "manufacturer part number", "description","date","stock qty","auto replenish rate",
+            "lead time","price"};
     @Override
-    public PageInfo<?> getGoods(int pageNumber, int pageSize, String tagid, String manufacturerPartNumber, String description, String stockQty) {
+    public PageInfo<?> getGoods(int pageNumber, int pageSize, String tagid,
+                                String manufacturerPartNumber, String description, String stockQty,Integer number) {
         PageHelper.startPage(pageNumber, pageSize);
         HashMap<String,Object> m = new HashMap<>();
         m.put("pageNumber",pageNumber);
@@ -33,6 +34,20 @@ public class GoodsServiceImpl implements GoodsService{
         m.put("description",description);
         m.put("stockQty",stockQty);
         return new PageInfo<>(goodsMapper.selectGoods(m));
+    }
+
+    @Override
+    public PageInfo<?> getWarningGoods(int pageNumber, int pageSize, String tagid,
+                                String manufacturerPartNumber, String description, String stockQty,Integer number) {
+        PageHelper.startPage(pageNumber, pageSize);
+        HashMap<String,Object> m = new HashMap<>();
+        m.put("pageNumber",pageNumber);
+        m.put("pageSize",pageSize);
+        m.put("tagid",tagid);
+        m.put("manufacturerPartNumber",manufacturerPartNumber);
+        m.put("description",description);
+        m.put("stockQty",stockQty);
+        return new PageInfo<>(goodsMapper.selectWarningGoods(m));
     }
 
     @Override
@@ -46,7 +61,7 @@ public class GoodsServiceImpl implements GoodsService{
     }
 
     @Override
-    public void deleteGoods(Integer[] ids) {
+    public void deleteGoods(String[] ids) {
         goodsMapper.deleteGoods(ids);
     }
     @Override

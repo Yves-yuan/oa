@@ -1,12 +1,16 @@
 package cn.linter.oasys.entity;
 
+import cn.linter.oasys.utils.AnnotationNotExport;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.ibatis.type.Alias;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 @Alias("Goods")
 public class Goods implements Serializable {
+    @AnnotationNotExport
     private int id;
     private String tagid;
     private String componentType;
@@ -14,18 +18,36 @@ public class Goods implements Serializable {
     private String manufacturer;
     private String manufacturerPartNumber;
     private String description;
-    private String date;
-    private String stockQty;
-    private String annualStock;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Timestamp date;
+    private Integer stockQty;
     private String autoReplenishRate;
     private String leadTime;
     private BigDecimal price;
+    private Long rank;
+    private String notes;
 
-    public String getDate() {
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public Long getRank() {
+        return rank;
+    }
+
+    public void setRank(Long rank) {
+        this.rank = rank;
+    }
+
+    public Timestamp getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Timestamp date) {
         this.date = date;
     }
 
@@ -37,13 +59,6 @@ public class Goods implements Serializable {
         this.price = price;
     }
 
-    public String getAnnualStock() {
-        return annualStock;
-    }
-
-    public void setAnnualStock(String annualStock) {
-        this.annualStock = annualStock;
-    }
 
     public String getAutoReplenishRate() {
         return autoReplenishRate;
@@ -109,11 +124,11 @@ public class Goods implements Serializable {
         this.description = description;
     }
 
-    public String getStockQty() {
+    public Integer getStockQty() {
         return stockQty;
     }
 
-    public void setStockQty(String stockQty) {
+    public void setStockQty(Integer stockQty) {
         this.stockQty = stockQty;
     }
 

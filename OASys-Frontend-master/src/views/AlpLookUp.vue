@@ -101,7 +101,6 @@
                     align="center">
             </el-table-column>
             <el-table-column
-                    :show-overflow-tooltip="true"
                     prop="description"
                     label="Description"
                     align="center">

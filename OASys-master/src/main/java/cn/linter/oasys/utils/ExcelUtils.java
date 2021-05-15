@@ -16,6 +16,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,7 +62,7 @@ public class ExcelUtils {
             Object targetObj = datalist.get(i);
             int columnIndex = 0;
             for (int j = 0; j < fields.length; j++) {
-                if (fields[j].getAnnotation(AnnotationNotExport.class) != null){
+                if (fields[j].getAnnotation(AnnotationNotExport.class) != null) {
                     continue;
                 }
                 //创建列
@@ -94,6 +95,11 @@ public class ExcelUtils {
         }
 
     }
+
+    public static List<Map<String, Object>> importExcel(String file, String[] columns) {
+        return null;
+    }
+
     public static Object getCellFormatValue(Cell cell) {
         Object cellValue = null;
         if (cell != null) {
@@ -113,7 +119,7 @@ public class ExcelUtils {
                             //数字
                             cellValue = String.valueOf(cell.getNumericCellValue());
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         cellValue = cell.getStringCellValue();
                     }
                     break;
@@ -128,19 +134,20 @@ public class ExcelUtils {
         } else {
             cellValue = "";
         }
-        try{
+        try {
             String regexFormat = "^([0-9]*)\\.0$";
             Pattern o = Pattern.compile(regexFormat);
             Matcher m = o.matcher(cellValue.toString());
-            if (m.matches()){
+            if (m.matches()) {
                 String tmp = m.group(1);
                 cellValue = tmp;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         return cellValue;
     }
+
     public static String transCellType(Object value) {
         String str = null;
         if (value instanceof Date) {

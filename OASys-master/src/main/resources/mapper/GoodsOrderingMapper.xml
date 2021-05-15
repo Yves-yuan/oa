@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.linter.oasys.mapper.GoodsOrderingMapper">
+    <resultMap id="GoodsResultMap" type="GoodsOrdering">
+        <id property="id" column="id"/>
+        <result property="goodsId" column="goodsId"/>
+        <result property="itemNo" column="itemNo"/>
+        <result property="goodsPartNumber" column="goodsPartNumber"/>
+        <result property="desc" column="desc"/>
+        <result property="qtyShipped" column="qtyShipped"/>
+        <result property="unitPrice" column="unitPrice"/>
+        <result property="extendedPrice" column="extendedPrice"/>
+        <result property="customerPo" column="customerPo"/>
+        <result property="project" column="project"/>
+        <result property="shipmentDate" column="shipmentDate"/>
+    </resultMap>
+
+    <insert id="insertGoodsOrderingList" parameterType="java.util.List">
+        insert into goods_ordering (itemNo,goodsId,goodsPartNumber,`desc`,qtyShipped,unitPrice,extendedPrice,customerPo,project,shipmentDate)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.itemNo},#{item.goodsId},#{item.goodsPartNumber},#{item.desc},#{item.qtyShipped},
+            #{item.unitPrice},#{item.extendedPrice},#{item.customerPo},
+            #{item.project},#{item.shipmentDate})
+        </foreach>
+    </insert>
+    <insert id="insertGoodsOrdering" parameterType="GoodsOrdering">
+        insert into goods_ordering (itemNo,goodsId,`goodsPartNumber`,`desc`,`qtyShipped`,`unitPrice`,`extendedPrice`,`customerPo`,`project`,`shipmentDate`)
+        values (#{itemNo},#{goodsId},#{goodsPartNumber},#{desc},#{qtyShipped},
+        #{unitPrice},#{extendedPrice},#{customerPo},
+        #{project},#{shipmentDate})
+    </insert>
+
+    <update id="updateGoodsOrdering">
+        update goods_ordering
+        <trim prefix="set" suffixOverrides=",">
+            <if test="desc != null">`desc`=#{desc},</if>
+            <if test="itemNo != null">`itemNo`=#{itemNo},</if>
+            <if test="qtyShipped != null">`qtyShipped`=#{qtyShipped},</if>
+            <if test="unitPrice != null">unitPrice=#{unitPrice},</if>
+            <if test="extendedPrice != null">extendedPrice=#{extendedPrice},</if>
+            <if test="customerPo != null">customerPo=#{customerPo},</if>
+            <if test="project != null">project=#{project},</if>
+            <if test="shipmentDate != null">shipmentDate=#{shipmentDate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGoodsOrdering">
+        delete from goods_ordering where id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="deleteAllGoodsOrdering">
+        truncate goods_ordering
+    </delete>
+
+
+
+    <select id="selectGoodsOrdering"  parameterType="hashmap" resultMap="GoodsResultMap">
+        select *
+        from goods_ordering
+        where 1=1
+        <if test="begin != null ">
+            and shipmentDate &gt;= #{begin}
+        </if>
+        <if test="end != null ">
+            and shipmentDate &lt;= #{end}
+        </if>
+        <if test="goodsPartNumber != null and goodsPartNumber != ''">
+            and (locate(#{goodsPartNumber},goodsPartNumber)>0 or locate(goodsPartNumber,#{goodsPartNumber})>0)
+        </if>
+        <if test="project != null and project != ''">
+            and (locate(#{project},project)>0 or locate(project,#{project})>0)
+        </if>
+        <if test="customerPo != null and customerPo != ''">
+            and (locate(#{customerPo},customerPo)>0 or locate(customerPo,#{customerPo})>0)
+        </if>
+    </select>
+
+    <select id="exportGoodsOrdering"  parameterType="hashmap" resultMap="GoodsResultMap">
+        select *
+        from goods_ordering
+        where 1=1
+        <if test="begin != null ">
+            and shipmentDate &gt;= #{begin}
+        </if>
+        <if test="end != null ">
+            and shipmentDate &lt;= #{end}
+        </if>
+        <if test="goodsPartNumber != null and goodsPartNumber != ''">
+            and (locate(#{goodsPartNumber},goodsPartNumber)>0 or locate(goodsPartNumber,#{goodsPartNumber})>0)
+        </if>
+        <if test="project != null and project != ''">
+            and (locate(#{project},project)>0 or locate(project,#{project})>0)
+        </if>
+        <if test="customerPo != null and customerPo != ''">
+            and #{customerPo}=customerPo
+        </if>
+    </select>
+
+    <select id="selectGoodsOrderingById" resultMap="GoodsResultMap">
+        select *
+        from goods_ordering
+        where id=${id}
+    </select>
+</mapper>

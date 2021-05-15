@@ -99,11 +99,13 @@
                     align="center">
             </el-table-column>
             <el-table-column
+                    min-width="180%"
                     prop="manufacturerPartNumber"
                     label="Manufacturer part number"
                     align="center">
             </el-table-column>
             <el-table-column
+                    min-width="200%"
                     prop="description"
                     label="Description"
                     align="center">

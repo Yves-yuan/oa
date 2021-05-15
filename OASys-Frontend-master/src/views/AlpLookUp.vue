@@ -91,19 +91,18 @@
                     align="center">
             </el-table-column>
             <el-table-column
-                    min-width="100%"
                     prop="manufacturer"
                     label="Manufacturer"
                     align="center">
             </el-table-column>
             <el-table-column
-                    min-width="160%"
+                    min-width="180%"
                     prop="manufacturerPartNumber"
                     label="Manufacturer part number"
                     align="center">
             </el-table-column>
             <el-table-column
-                    min-width="160%"
+                    min-width="200%"
                     prop="description"
                     label="Description"
                     align="center">

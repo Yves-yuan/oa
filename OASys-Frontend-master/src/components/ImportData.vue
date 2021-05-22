@@ -75,13 +75,13 @@
                     prop="rank"
                     label="rank"
                     align="center"
-                    width="100">
+                    width="70%">
             </el-table-column>
             <el-table-column
                     prop="tagid"
                     label="tagid"
                     align="center"
-                    width="100">
+                    width="70%">
             </el-table-column>
             <el-table-column
                     prop="componentType"
@@ -121,16 +121,18 @@
                     align="center">
             </el-table-column>
             <el-table-column
+                    width="70%"
                     prop="price"
                     label="price"
                     align="center">
             </el-table-column>
             <el-table-column
                     prop="autoReplenishRate"
-                    label="Safety Stock Line"
+                    label="auto replenish rate"
                     align="center">
             </el-table-column>
             <el-table-column
+                    width="70%"
                     prop="leadTime"
                     label="lead time"
                     align="center">
@@ -143,7 +145,7 @@
             <el-table-column
                     label="操作"
                     align="center"
-                    width="300"
+                    width="250"
                     fixed="right">
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini"

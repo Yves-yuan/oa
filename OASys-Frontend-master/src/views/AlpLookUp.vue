@@ -132,6 +132,11 @@
                     label="lead time"
                     align="center">
             </el-table-column>
+            <el-table-column
+                    prop="notes"
+                    label="Notes"
+                    align="center">
+            </el-table-column>
 <!--            <el-table-column-->
 <!--                    label="操作"-->
 <!--                    align="center"-->

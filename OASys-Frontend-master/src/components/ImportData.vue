@@ -128,7 +128,7 @@
             </el-table-column>
             <el-table-column
                     prop="autoReplenishRate"
-                    label="auto replenish rate"
+                    label="Safety Stock Line"
                     align="center">
             </el-table-column>
             <el-table-column

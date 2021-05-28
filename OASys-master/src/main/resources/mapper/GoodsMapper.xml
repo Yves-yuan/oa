@@ -78,10 +78,10 @@
     </select>
 
     <select id="selectGoods"  parameterType="hashmap" resultMap="GoodsResultMap">
-        select *
+        select c.* from (select a.*
         from goods a join
         (select `manufacturer_part_number`,sum(stock_qty) as sum_stockQty from goods group by `manufacturer_part_number`) b
-        on a.`manufacturer_part_number`=b.`manufacturer_part_number`
+        on a.`manufacturer_part_number`=b.`manufacturer_part_number`) c
         where 1=1
         <if test="tagid != null and tagid != ''">
             and (locate(#{tagid},tagid)>0 or locate(tagid,#{tagid})>0)
@@ -109,8 +109,10 @@
         </if>
     </select>
     <select id="selectWarningGoods"  parameterType="hashmap" resultMap="GoodsResultMap">
-        select a.*,rank() over (order by manufacturer_part_number) as `rank`
-        from goods a join
+        select c.*,@i:= @i+ 1 AS `rank` from
+        (select a.*
+        from
+        goods a join
         (select `manufacturer_part_number`,sum(stock_qty) as sum_stockQty from goods group by `manufacturer_part_number`) b
         on a.`manufacturer_part_number`=b.`manufacturer_part_number`
         where 1=1  and  b.sum_stockQty &lt;= a.auto_replenish_rate
@@ -135,6 +137,8 @@
         <if test="stockQty != null and stockQty != ''">
             and (locate(#{stockQty},stock_qty)>0 or locate(stock_qty,#{stockQty})>0)
         </if>
+        order by manufacturer_part_number) c,
+        ( SELECT @i:= 0 ) r
     </select>
     <select id="selectGoodsById" resultMap="GoodsResultMap">
         select *

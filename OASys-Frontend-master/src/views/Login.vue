@@ -39,14 +39,14 @@
                     username: [
                         {
                             required: true,
-                            message: "请输入用户名",
+                            message: "User name needed",
                             trigger: "blur"
                         }
                     ],
                     password: [
                         {
                             required: true,
-                            message: "请输入密码",
+                            message: "Password needed",
                             trigger: "blur"
                         }
                     ]

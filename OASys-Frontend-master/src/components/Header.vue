@@ -4,7 +4,7 @@
             <li v-if="auth" class="nav">
                 welcome，{{ auth.username }}，
             </li>
-            <notice/>
+<!--            <notice/>-->
             <li class="nav">
                 <a href="javascript:" @click="logout">
                     exit
@@ -18,11 +18,11 @@
     import {mapState} from "vuex";
     import {logout} from "../utils/api";
     import {removeAuth} from "../utils/auth";
-    import Notice from "./Notice";
+    // import Notice from "./Notice";
 
     export default {
         name: "Header",
-        components: {Notice},
+        // components: {Notice},
         computed: mapState([
             "auth"
         ]),

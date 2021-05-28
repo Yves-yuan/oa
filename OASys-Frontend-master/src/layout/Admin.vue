@@ -9,7 +9,7 @@
             </el-header>
             <el-main>
                 <router-view/>
-                <Chat/>
+<!--                <Chat/>-->
             </el-main>
         </el-container>
     </el-container>
@@ -18,14 +18,14 @@
 <script>
     import Aside from "../components/Aside";
     import Header from "../components/Header";
-    import Chat from "../components/Chat";
+    // import Chat from "../components/Chat";
 
     export default {
         name: "Admin",
         components: {
             Aside,
             Header,
-            Chat
+            // Chat
         }
     }
 </script>

@@ -18,11 +18,11 @@
                 </el-table-column>
             </el-table>
             <el-button type="text" slot="reference">
-                通知
+                Notice
                 <el-badge :value=unreadCount :max="99"/>
             </el-button>
             <div class="mark">
-                <el-button size="small" @click="markRead">标记已读</el-button>
+                <el-button size="small" @click="markRead">Mark readed</el-button>
             </div>
         </el-popover>
     </div>

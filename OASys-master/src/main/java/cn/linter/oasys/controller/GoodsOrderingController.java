@@ -54,7 +54,7 @@ public class GoodsOrderingController {
             if (res) {
                 return new Response("success", "导入成功！");
             } else {
-                return new Response("failure", "导入失败!");
+                return new Response("failure", "导入失败!检查数据Mftr. Part No 是否有对应商品");
             }
         } catch (Exception e) {
             e.printStackTrace();

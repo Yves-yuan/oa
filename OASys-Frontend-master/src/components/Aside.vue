@@ -9,9 +9,9 @@
                         <div v-if="auth" class="username">
                             name：{{ auth.username }}
                         </div>
-                        <div v-if="auth" class="rolename">
-                            role：{{ auth.role.name }}
-                        </div>
+<!--                        <div v-if="auth" class="rolename">-->
+<!--                            role：{{ auth.role.name }}-->
+<!--                        </div>-->
                     </div>
                 </div>
 <!--                <el-submenu index="1">-->

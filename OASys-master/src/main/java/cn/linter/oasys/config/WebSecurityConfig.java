@@ -29,14 +29,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler((request, response, authentication) -> {
                     response.setContentType("application/json;charset=utf-8");
                     PrintWriter out = response.getWriter();
-                    out.write("{\"status\":\"success\",\"message\":\"登录成功!\"}");
+                    out.write("{\"status\":\"success\",\"message\":\"Login succeed!\"}");
                     out.flush();
                     out.close();
                 })
                 .failureHandler((request, response, exception) -> {
                     response.setContentType("application/json;charset=utf-8");
                     PrintWriter out = response.getWriter();
-                    out.write("{\"status\":\"error\",\"message\":\"账号或密码错误!\"}");
+                    out.write("{\"status\":\"error\",\"message\":\"User name or psd is wrong!\"}");
                     out.flush();
                     out.close();
                 })
@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     response.setContentType("application/json;charset=utf-8");
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     PrintWriter out = response.getWriter();
-                    out.write("{\"status\":\"error\",\"message\":\"授权已过期，请重新登录。\"}");
+                    out.write("{\"status\":\"error\",\"message\":\"Auth is out of date,please login again。\"}");
                     out.flush();
                     out.close();
                 })
@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     response.setContentType("application/json;charset=utf-8");
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     PrintWriter out = response.getWriter();
-                    out.write("{\"status\":\"error\",\"message\":\"您没有权限进行此操作!\"}");
+                    out.write("{\"status\":\"error\",\"message\":\"You have no privilege!\"}");
                     out.flush();
                     out.close();
                 })
@@ -62,7 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler((request, response, authentication) -> {
                     response.setContentType("application/json;charset=utf-8");
                     PrintWriter out = response.getWriter();
-                    out.write("{\"status\":\"success\",\"message\":\"注销成功!\"}");
+                    out.write("{\"status\":\"success\",\"message\":\"Sign out succeed!\"}");
                     out.flush();
                     out.close();
                 })

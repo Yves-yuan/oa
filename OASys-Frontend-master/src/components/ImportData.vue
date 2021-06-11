@@ -40,7 +40,7 @@
                         <el-form-item label="Description:">
                             <el-input label="Description："
                                       placeholder="Description"
-                                      v-model="searchParams.description">
+                                      v-model="searchParams.descriptionStr">
                             </el-input>
                         </el-form-item>
                     </el-col>

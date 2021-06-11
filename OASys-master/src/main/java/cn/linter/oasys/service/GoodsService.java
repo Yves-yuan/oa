@@ -7,7 +7,7 @@ public interface GoodsService {
     Goods getGoodsById(Integer id);
 
     PageInfo<?> getGoods(int pageNumber, int pageSize, String tagid, String manufacturerPartNumber
-            , String description, String stockQty,Integer number);
+            , String description, String componentType,Integer number);
     PageInfo<?> getWarningGoods(int pageNumber, int pageSize, String tagid, String manufacturerPartNumber
             , String description, String stockQty,Integer number);
     int updateGoods(Goods goods);

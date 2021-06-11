@@ -24,15 +24,15 @@ public class GoodsServiceImpl implements GoodsService{
             "lead time","price"};
     @Override
     public PageInfo<?> getGoods(int pageNumber, int pageSize, String tagid,
-                                String manufacturerPartNumber, String description, String stockQty,Integer number) {
+                                String manufacturerPartNumber, String descriptionStr, String componentType,Integer number) {
         PageHelper.startPage(pageNumber, pageSize);
         HashMap<String,Object> m = new HashMap<>();
         m.put("pageNumber",pageNumber);
         m.put("pageSize",pageSize);
         m.put("tagid",tagid);
         m.put("manufacturerPartNumber",manufacturerPartNumber);
-        m.put("description",description);
-        m.put("stockQty",stockQty);
+        m.put("description",descriptionStr);
+        m.put("componentType",componentType);
         return new PageInfo<>(goodsMapper.selectGoods(m));
     }
 

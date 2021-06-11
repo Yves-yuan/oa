@@ -76,12 +76,12 @@ public class GoodsController {
                              @RequestParam(value = "pageSize", defaultValue = "8") int pageSize,
                              String tagid,
                              String manufacturerPartNumber,
-                             String description,
-                             String stockQty,
+                             String descriptionStr,
+                             String componentType,
                              Integer number
     ) {
         PageInfo<?> pageInfo = goodsService.getGoods(pageNumber, pageSize, tagid, manufacturerPartNumber,
-                description, stockQty, number);
+                descriptionStr, componentType, number);
         return new Response("success", pageInfo.getTotal(), pageInfo.getList());
     }
 

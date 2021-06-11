@@ -70,13 +70,13 @@
             and shipmentDate &lt;= #{end}
         </if>
         <if test="goodsPartNumber != null and goodsPartNumber != ''">
-            and (locate(#{goodsPartNumber},goodsPartNumber)>0 or locate(goodsPartNumber,#{goodsPartNumber})>0)
+            and (locate(#{goodsPartNumber},goodsPartNumber)>=0 or locate(goodsPartNumber,#{goodsPartNumber})>=0)
         </if>
         <if test="project != null and project != ''">
-            and (locate(#{project},project)>0 or locate(project,#{project})>0)
+            and (locate(#{project},project)>=0 or locate(project,#{project})>=0)
         </if>
         <if test="customerPo != null and customerPo != ''">
-            and (locate(#{customerPo},customerPo)>0 or locate(customerPo,#{customerPo})>0)
+            and (locate(#{customerPo},customerPo)>=0 or locate(customerPo,#{customerPo})>=0)
         </if>
     </select>
 
@@ -91,10 +91,10 @@
             and shipmentDate &lt;= #{end}
         </if>
         <if test="goodsPartNumber != null and goodsPartNumber != ''">
-            and (locate(#{goodsPartNumber},goodsPartNumber)>0 or locate(goodsPartNumber,#{goodsPartNumber})>0)
+            and (locate(#{goodsPartNumber},goodsPartNumber)>=0 or locate(goodsPartNumber,#{goodsPartNumber})>=0)
         </if>
         <if test="project != null and project != ''">
-            and (locate(#{project},project)>0 or locate(project,#{project})>0)
+            and (locate(#{project},project)>=0 or locate(project,#{project})>=0)
         </if>
         <if test="customerPo != null and customerPo != ''">
             and #{customerPo}=customerPo

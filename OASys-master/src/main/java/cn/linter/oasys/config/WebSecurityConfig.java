@@ -2,9 +2,13 @@ package cn.linter.oasys.config;
 
 import cn.linter.oasys.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
@@ -21,9 +25,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/api/setAttendanceTime").hasAnyRole("主管","经理")
-                .antMatchers("/api/**").authenticated()
+        http
+                .userDetailsService(userService)
+                .authorizeRequests()
+                .antMatchers("/api/setAttendanceTime")
+                .hasAnyRole("主管", "经理")
+                .antMatchers("/api/**")
+                .authenticated()
                 .and().formLogin()
                 .loginProcessingUrl("/api/login")
                 .successHandler((request, response, authentication) -> {
@@ -36,7 +44,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureHandler((request, response, exception) -> {
                     response.setContentType("application/json;charset=utf-8");
                     PrintWriter out = response.getWriter();
-                    out.write("{\"status\":\"error\",\"message\":\"User name or psd is wrong!\"}");
+                    String msg = exception.getMessage();
+                    if(msg.equals("用户名或密码错误")){
+                        msg = "user name or password is wrong";
+                    }
+                    out.write("{\"status\":\"error\",\"message\":\""+msg+"\"}" );
                     out.flush();
                     out.close();
                 })
@@ -59,6 +71,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 })
                 .and().logout()
                 .logoutUrl("/api/logout")
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
                 .logoutSuccessHandler((request, response, authentication) -> {
                     response.setContentType("application/json;charset=utf-8");
                     PrintWriter out = response.getWriter();
@@ -66,7 +80,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     out.flush();
                     out.close();
                 })
-                .and().userDetailsService(userService)
-                .csrf() .disable();
+                .and()
+                .csrf()
+                .disable()
+                .sessionManagement()
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(true)
+        ;
+
+
+    }
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
     }
 }

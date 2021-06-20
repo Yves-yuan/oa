@@ -73,7 +73,7 @@
                   style="width: 100%">
             <el-table-column
                     prop="rank"
-                    label="rank"
+                    label="Item No"
                     align="center"
                     width="70%">
             </el-table-column>

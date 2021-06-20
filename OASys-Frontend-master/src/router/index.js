@@ -19,6 +19,7 @@ import GoodsPacking from "../views/GoodsPacking";
 import Flight from "../views/Flight";
 import Flightsearch from "../views/FlightSearch";
 import LookData from "../views/AlpLookUp";
+import AlpBackup from "../views/AlpBackup";
 
 Vue.use(VueRouter);
 
@@ -86,6 +87,11 @@ const routes = [
                 path: "/goodsPacking",
                 name: "goodsPacking",
                 component: GoodsPacking,
+            },
+            {
+                path: "/alpBackup",
+                name: "alpBackup",
+                component: AlpBackup,
             },
             {
                 path: "/flight",

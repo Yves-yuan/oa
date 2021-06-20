@@ -81,6 +81,7 @@
                     <el-menu-item v-show="this.$store.state.auth.role.name=='经理'" index="/user">user manage</el-menu-item>
                     <el-menu-item v-show="this.$store.state.auth.role.name=='经理'" index="/goods">data manage</el-menu-item>
                     <el-menu-item v-show="this.$store.state.auth.role.name=='经理'" index="/goodsPacking">packing list</el-menu-item>
+                    <el-menu-item v-show="this.$store.state.auth.role.name=='经理'" index="/alpBackup">data backup</el-menu-item>
                     <el-menu-item index="/lookgoods">->inventory lookup</el-menu-item>
 <!--                    <el-menu-item index="/flight">管理航班</el-menu-item>-->
 <!--                    <el-menu-item index="/flightsearch">查询航班</el-menu-item>-->

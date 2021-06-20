@@ -111,4 +111,31 @@ public class User implements UserDetails, Serializable {
         authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
         return authorities;
     }
+
+    @Override
+    public String toString() {
+        if (this.getRole().getName().equals("经理")) {
+            return this.username;
+        } else {
+            return super.toString();
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        if (this.getRole().getName().equals("经理")) {
+            return username.hashCode();
+        } else {
+            return super.hashCode();
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this.getRole().getName().equals("经理")) {
+            return this.toString().equals(obj.toString());
+        } else {
+            return super.equals(obj);
+        }
+    }
 }

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.linter.oasys.mapper.AlpBakMapper">
+    <resultMap id="AlpBackupRecordResultMap" type="AlpBackupRecord">
+        <result property="id" column="id"/>
+        <result property="bakTs" column="bak_ts"/>
+        <result property="description" column="description"/>
+    </resultMap>
+    <select id="selectGoodsBackups" resultMap="AlpBackupRecordResultMap">
+        select * from bak_record
+    </select>
+    <select id="selectGoodsBackupsById" resultMap="AlpBackupRecordResultMap">
+        select * from bak_record where id=#{id}
+    </select>
+
+    <insert id="insertBackupRecord" parameterType="AlpBackupRecord">
+        insert into bak_record(bak_ts,description)
+        values (#{bakTs},#{description})
+    </insert>
+    <insert id="backupGoods">
+        insert into goods_bak select *,#{bak_ts} from goods
+    </insert>
+    <insert id="backupGoodsOrdering">
+        insert into goods_ordering_bak select *,#{bak_ts} from goods_ordering
+    </insert>
+    <insert id="recoverFromGoodsBackup">
+        truncate table goods;
+        insert into goods select id,tagid,component_type,sub_type,manufacturer,manufacturer_part_number,description,
+        date,stock_qty,annual_stock,auto_replenish_rate,lead_time,price,notes from goods_bak
+        where bak_ts=#{bak_ts}
+    </insert>
+
+    <insert id="recoverFromGoodsOrderingBackup">
+        truncate table goods_ordering;
+        insert into goods_ordering select id,goodsPartNumber,goodsId,itemNo,`desc`,qtyShipped,unitPrice,extendedPrice,
+        customerPo,project,shipmentDate from goods_ordering_bak
+        where bak_ts=#{bak_ts}
+    </insert>
+
+</mapper>

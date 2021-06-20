@@ -135,7 +135,12 @@ export function deleteGoodsOrder(data) {
 export function deleteAllGoodsOrder(data) {
     return post("/goodsOrdering/deleteAll", data);
 }
-
+export function getBackups(params){
+    return get("/alpBackup/getBackups", params);
+}
+export function recoverFromBackup(data){
+    return post("/alpBackup/recoverFrom",data);
+}
 
 export function addFlight(params) {
     return post("/api/addFlight", params);

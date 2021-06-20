@@ -6,20 +6,20 @@ import router from "../router";
 axios.interceptors.request.use(
     config => {
         config.timeout = 4000;
-        return config
+        return config;
     },
     error => {
         MessageBox.alert(error);
-        Promise.reject(error)
+        Promise.reject(error);
     }
 );
 
 axios.interceptors.response.use(
     response => {
         if (response.data.status === "error") {
-            Message.error(response.data.message)
+            Message.error(response.data.message);
         }
-        return response.data
+        return response.data;
     },
     error => {
         switch (error.response.status) {
@@ -44,6 +44,7 @@ export function get(url, params) {
         url,
         params,
         method: "get",
+        timeout:10000,
     });
 }
 
@@ -74,5 +75,6 @@ export function post(url, data) {
         url,
         data,
         method: "post",
+        timeout:10000,
     });
 }

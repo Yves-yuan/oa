@@ -16,7 +16,7 @@ public class StaticScheduleTask {
     @Autowired
     GoodsBackupService goodsBackupService;
 
-    @Scheduled(cron = "1 * * * * ?")
+    @Scheduled(cron = "1 1 0 * * ?")
     private void backupAlp() {
         AlpBackupRecord alpBackupRecord = new AlpBackupRecord();
         Timestamp ts = new Timestamp(System.currentTimeMillis());

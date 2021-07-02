@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Predicate;
 
 @Service
 public class GoodsOrderingServiceImpl implements GoodsOrderingService {
@@ -172,9 +173,9 @@ public class GoodsOrderingServiceImpl implements GoodsOrderingService {
 //        Row tmp1 =  sheet.getRow(1);
 //        Cell tmp1c = tmp1.getCell(1);
 //        String customPo = tmp1c.getStringCellValue();
-        String customPo =(String) ExcelUtils.getCellFormatValue( sheet.getRow(0).getCell(1));
-        String project = (String) ExcelUtils.getCellFormatValue( sheet.getRow(1).getCell(1));
-        Timestamp shipmentDate =new Timestamp(sheet.getRow(2).getCell(1).getDateCellValue().getTime());
+        String customPo = (String) ExcelUtils.getCellFormatValue(sheet.getRow(0).getCell(1));
+        String project = (String) ExcelUtils.getCellFormatValue(sheet.getRow(1).getCell(1));
+        Timestamp shipmentDate = new Timestamp(sheet.getRow(2).getCell(1).getDateCellValue().getTime());
         //获取表字段对应的列号表，第五列开始读取
         int columnNameRowIndex = 4;
         Row row = sheet.getRow(columnNameRowIndex);
@@ -190,7 +191,7 @@ public class GoodsOrderingServiceImpl implements GoodsOrderingService {
                 }
             }
         }
-        for (int i = columnNameRowIndex+1; i < rownum; i++) {
+        for (int i = columnNameRowIndex + 1; i < rownum; i++) {
             Map<String, Object> map = new LinkedHashMap<>();
             row = sheet.getRow(i);
             if (row != null) {
@@ -201,9 +202,9 @@ public class GoodsOrderingServiceImpl implements GoodsOrderingService {
                     cellData = ExcelUtils.getCellFormatValue(row.getCell(e.getColumnIndex()));
                     map.put(dbName, cellData);
                 }
-                map.put("customerPo",customPo);
-                map.put("project",project);
-                map.put("shipmentDate",shipmentDate);
+                map.put("customerPo", customPo);
+                map.put("project", project);
+                map.put("shipmentDate", shipmentDate);
             } else {
                 break;
             }
@@ -263,11 +264,20 @@ public class GoodsOrderingServiceImpl implements GoodsOrderingService {
         return true;
     }
 
-    public boolean packing(List<Map<String, Object>> list) {
+    public boolean packing(List<Map<String, Object>> list) throws Exception {
+        list.removeIf(stringObjectMap -> stringObjectMap.get("itemNo").equals(""));
         Map<String, Integer> total = new HashMap<>();
         for (Map<String, Object> order : list) {
             String partNo = order.get("goodsPartNumber").toString();
-            int number = (int) Double.parseDouble(order.get("qtyShipped").toString());
+            if(partNo.equals("")){
+                continue;
+            }
+            int number;
+            try {
+                number = (int) Double.parseDouble(order.get("qtyShipped").toString());
+            } catch (Exception e) {
+                throw new Exception("part number " + partNo + " qtyShipped is not valid");
+            }
             int sum = total.getOrDefault(partNo, 0) + number;
             total.put(partNo, sum);
         }
@@ -287,7 +297,15 @@ public class GoodsOrderingServiceImpl implements GoodsOrderingService {
         }
         for (Map<String, Object> order : list) {
             String partNo = order.get("goodsPartNumber").toString();
-            int number = (int) Double.parseDouble(order.get("qtyShipped").toString());
+            if(partNo.equals("")){
+                continue;
+            }
+            int number;
+            try {
+                number = (int) Double.parseDouble(order.get("qtyShipped").toString());
+            } catch (Exception e) {
+                throw new Exception("part number " + partNo + " qtyShipped is not valid");
+            }
             List<Goods> goods = goodsMapper.selectGoodsByPartNumber(partNo);
             Collections.sort(goods, new Comparator<Goods>() {
                 @Override

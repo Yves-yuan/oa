@@ -232,12 +232,6 @@ DROP TABLE IF EXISTS `goods_ordering_bak`;
 DROP TABLE IF EXISTS `goods`;
 DROP TABLE IF EXISTS `goods_bak`;
 DROP TABLE IF EXISTS `bak_record`;
-create table `bak_record`(
-`id` int AUTO_INCREMENT ,
-`bak_ts` TIMESTAMP,
-`description` text,
-PRIMARY KEY (`id`) USING BTREE,
-)ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 CREATE TABLE `goods`  (
   `id` int AUTO_INCREMENT ,
@@ -252,11 +246,18 @@ CREATE TABLE `goods`  (
   `annual_stock` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `auto_replenish_rate` int,
   `lead_time` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `price` DECIMAL(10,6),
+  `price` DECIMAL(20,2),
   `notes` varchar(255),
   PRIMARY KEY (`id`) USING BTREE,
   INDEX  index_tagid  (tagid)
 ) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+create table `bak_record`(
+`id` int AUTO_INCREMENT ,
+`bak_ts` TIMESTAMP,
+`description` text,
+PRIMARY KEY (`id`) USING BTREE
+)ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 CREATE TABLE `goods_bak`  (
   `id` int ,
@@ -271,13 +272,30 @@ CREATE TABLE `goods_bak`  (
   `annual_stock` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `auto_replenish_rate` int,
   `lead_time` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `price` DECIMAL(10,6),
+  `price` DECIMAL(20,2),
   `notes` varchar(255),
   `bak_ts` TIMESTAMP,
   PRIMARY KEY (`id`,`bak_ts`) USING BTREE,
   INDEX  index_bak_ts  (bak_ts)
 ) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
+
+CREATE TABLE `goods_ordering_bak`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `goodsPartNumber` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL ,
+  `goodsId` int  NOT NULL,
+  `itemNo` int,
+  `desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `qtyShipped` int   ,
+  `unitPrice` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `extendedPrice` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `customerPo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `project` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `shipmentDate` TIMESTAMP,
+  `bak_ts` TIMESTAMP,
+  PRIMARY KEY (`id`,`bak_ts`) USING BTREE,
+  INDEX  index_bak_ts  (bak_ts)
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 
 CREATE TABLE `goods_ordering`  (
@@ -295,23 +313,6 @@ CREATE TABLE `goods_ordering`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
-
-CREATE TABLE `goods_ordering_bak`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT,
-  `goodsPartNumber` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL ,
-  `goodsId` int  NOT NULL,
-  `itemNo` int,
-  `desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `qtyShipped` int   ,
-  `unitPrice` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `extendedPrice` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `customerPo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `project` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `shipmentDate` TIMESTAMP,
-  `bak_ts` TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX  index_bak_ts  (bak_ts)
-) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 DROP TABLE IF EXISTS `flight`;
 CREATE TABLE `flight`  (

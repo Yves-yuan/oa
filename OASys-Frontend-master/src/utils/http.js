@@ -44,7 +44,7 @@ export function get(url, params) {
         url,
         params,
         method: "get",
-        timeout:10000,
+        timeout: 10000,
     });
 }
 
@@ -52,12 +52,9 @@ export async function download(method, url, params, fileName) {
     axios({
         method: method,
         url: url,
-        params:params,
+        params: params,
         responseType: 'blob'
     }).then(response => {
-        if (!response) {
-            return;
-        }
         let url = window.URL.createObjectURL(new Blob([response]));
         let link = document.createElement('a');
         link.style.display = 'none';
@@ -75,6 +72,6 @@ export function post(url, data) {
         url,
         data,
         method: "post",
-        timeout:10000,
+        timeout: 10000,
     });
 }

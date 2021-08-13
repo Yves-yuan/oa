@@ -84,8 +84,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable()
                 .sessionManagement()
+                .sessionAuthenticationFailureHandler(((request, response, exception) -> {
+                    response.setContentType("application/json;charset=utf-8");
+                    PrintWriter out = response.getWriter();
+                    out.write("{\"status\":\"error\",\"message\":\"session time out\"}");
+                    out.flush();
+                    out.close();
+                }))
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(true)
+
         ;
 
 

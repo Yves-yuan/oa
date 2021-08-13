@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.apache.poi.hssf.util.HSSFColor;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,6 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -142,18 +144,20 @@ public class GoodsOrderingController {
             String shippingTo,
             HttpServletResponse response
     ) {
+        List<?> list = goodsOrderingService.exportGoodsOrdering(1, Integer.MAX_VALUE,
+                begin, end, goodsPartNumber, project, customerPo).getList();
         //调用Excel导出工具类
         //客户需要所有数据导出
-        export(response, goodsOrderingService.exportGoodsOrdering(1, Integer.MAX_VALUE,
-                begin, end, goodsPartNumber, project, customerPo).getList(),
-                GoodsOrderingServiceImpl.excelColumnNameArr
-                ,shippingDetails,company,shippingTo
+        export(response, list,
+                GoodsOrderingServiceImpl.exportExcelColumnNameArr
+                , shippingDetails, company, shippingTo
         );
         return "success";
     }
 
     public static void export(HttpServletResponse response, List<?> importlist,
-                              String[] attributeNames,String shippingDetails,String company,String shippingTo) {
+                              String[] attributeNames, String shippingDetails, String company, String shippingTo) {
+
         //获取数据集
         List<?> datalist = importlist;
 
@@ -165,41 +169,45 @@ public class GoodsOrderingController {
         HSSFSheet sheet = workbook.createSheet();
         //设置表格默认列宽度为15个字节
         sheet.setDefaultColumnWidth((short) 18);
-
         //获取字段名数组
         //获取对象属性
-        Field[] fields = ClassUtil.getClassAttribute(importlist.get(0));
         //获取对象get方法
-        List<Method> methodList = ClassUtil.getMethodGet(importlist.get(0));
+        Field[] fields = new Field[0];
+        List<Method> methodList = new ArrayList<>();
+        //order detail
+        GoodsOrdering first = new GoodsOrdering();
+        if (!importlist.isEmpty()) {
+            fields = ClassUtil.getClassAttribute(importlist.get(0));
+            methodList = ClassUtil.getMethodGet(importlist.get(0));
+            first = (GoodsOrdering) importlist.get(0);
+        }
         int orderDetailRowIndex = 1;
         int shipDetailRowIndex = 6;
-        int companyRowIndex  = 9;
-        int shippingToRowIndex  = 12;
+        int companyRowIndex = 9;
+        int shippingToRowIndex = 12;
         int columnNameRowIndex = 15;
         int dataRowIndex = 16;
         HSSFCellStyle csTitle = workbook.createCellStyle();
         Font titleFont = workbook.createFont();
         titleFont.setColor(HSSFColor.HSSFColorPredefined.GREEN.getIndex());
         csTitle.setFont(titleFont);
-        //order detail
-        GoodsOrdering first = (GoodsOrdering) importlist.get(0);
         Row rowDetail = sheet.createRow(orderDetailRowIndex);
         Cell rowDetailCell = rowDetail.createCell(2);
         rowDetailCell.setCellType(CellType.STRING);
         rowDetailCell.setCellValue("Order Details:");
         rowDetailCell.setCellStyle(csTitle);
-        Row rowPoNumber = sheet.createRow(orderDetailRowIndex+1);
+        Row rowPoNumber = sheet.createRow(orderDetailRowIndex + 1);
         Cell rowPoNumberCell = rowPoNumber.createCell(2);
         rowPoNumberCell.setCellType(CellType.STRING);
-        rowPoNumberCell.setCellValue("Your PO Number:"+first.getCustomerPo());
-        Row rowProject = sheet.createRow(orderDetailRowIndex+2);
+        rowPoNumberCell.setCellValue("Your PO Number:" + first.getCustomerPo());
+        Row rowProject = sheet.createRow(orderDetailRowIndex + 2);
         Cell rowProjectCell = rowProject.createCell(2);
         rowProjectCell.setCellType(CellType.STRING);
-        rowProjectCell.setCellValue("Project#:"+first.getProject());
-        Row rowOrderDate = sheet.createRow(orderDetailRowIndex+3);
+        rowProjectCell.setCellValue("Project#:" + first.getProject());
+        Row rowOrderDate = sheet.createRow(orderDetailRowIndex + 3);
         Cell rowOrderDateCell = rowOrderDate.createCell(2);
         rowOrderDateCell.setCellType(CellType.STRING);
-        rowOrderDateCell.setCellValue("Order Date:"+first.getShipmentDate());
+        rowOrderDateCell.setCellValue("Order Date:" + first.getShipmentDate());
 
         //Shipping Detail
         Row rowShippingDetails = sheet.createRow(shipDetailRowIndex);
@@ -207,10 +215,13 @@ public class GoodsOrderingController {
         rowShippingDetailsCell.setCellType(CellType.STRING);
         rowShippingDetailsCell.setCellValue("Shipping Detail:");
         rowShippingDetailsCell.setCellStyle(csTitle);
-        Row rowShippingDetailsInfo = sheet.createRow(shipDetailRowIndex+1);
+        Row rowShippingDetailsInfo = sheet.createRow(shipDetailRowIndex + 1);
         Cell rowShippingDetailsInfoCell = rowShippingDetailsInfo.createCell(2);
         rowShippingDetailsInfoCell.setCellType(CellType.STRING);
-        shippingDetails = shippingDetails.replace("\n","\r\n");
+        if (shippingDetails == null) {
+            shippingDetails = "";
+        }
+        shippingDetails = shippingDetails.replace("\n", "\r\n");
         rowShippingDetailsInfoCell.setCellValue(shippingDetails);
         rowShippingDetailsInfoCell.setCellStyle(cs);
 
@@ -220,7 +231,7 @@ public class GoodsOrderingController {
         rowCompanyCell.setCellType(CellType.STRING);
         rowCompanyCell.setCellValue("Company:");
         rowCompanyCell.setCellStyle(csTitle);
-        Row rowCompanyInfo = sheet.createRow(companyRowIndex+1);
+        Row rowCompanyInfo = sheet.createRow(companyRowIndex + 1);
         Cell rowCompanyInfoCell = rowCompanyInfo.createCell(2);
         rowCompanyInfoCell.setCellType(CellType.STRING);
         rowCompanyInfoCell.setCellValue(company);
@@ -231,7 +242,7 @@ public class GoodsOrderingController {
         rowShippingToCell.setCellType(CellType.STRING);
         rowShippingToCell.setCellValue("Shipping to:");
         rowShippingToCell.setCellStyle(csTitle);
-        Row rowShippingToInfo = sheet.createRow(shippingToRowIndex+1);
+        Row rowShippingToInfo = sheet.createRow(shippingToRowIndex + 1);
         Cell rowShippingToInfoCell = rowShippingToInfo.createCell(2);
         rowShippingToInfoCell.setCellType(CellType.STRING);
         rowShippingToInfoCell.setCellValue(shippingTo);
@@ -245,7 +256,7 @@ public class GoodsOrderingController {
         Row row = sheet.createRow(columnNameRowIndex);
         for (int j = 0; j < attributeNames.length; j++) {
             //创建列
-            Cell cell = row.createCell(j+1);
+            Cell cell = row.createCell(j + 1);
             //设置单元类型为String
             cell.setCellType(CellType.STRING);
             cell.setCellValue(ExcelUtils.transCellType(attributeNames[j]));
@@ -266,7 +277,7 @@ public class GoodsOrderingController {
                     continue;
                 }
                 //创建列
-                Cell cell = row.createCell(columnIndex+1);
+                Cell cell = row.createCell(columnIndex + 1);
                 cell.setCellType(CellType.STRING);
                 //
                 try {
@@ -282,14 +293,14 @@ public class GoodsOrderingController {
             }
         }
         //Your Merchandise Total
-        Row rowMerchandiseTotal = sheet.createRow(dataRowIndex+datalist.size()+2);
+        Row rowMerchandiseTotal = sheet.createRow(dataRowIndex + datalist.size() + 2);
         Cell rowMerchandiseTotalCell = rowMerchandiseTotal.createCell(5);
         rowMerchandiseTotalCell.setCellType(CellType.STRING);
         rowMerchandiseTotalCell.setCellValue("Your Merchandise Total");
         Cell rowMerchandiseTotalDollarCell = rowMerchandiseTotal.createCell(6);
         rowMerchandiseTotalDollarCell.setCellType(CellType.STRING);
-        rowMerchandiseTotalDollarCell.setCellValue("$"+totalExpend);
-        Row rowMerchandiseTotalSalesInUSD = sheet.createRow(dataRowIndex+datalist.size()+3);
+        rowMerchandiseTotalDollarCell.setCellValue("$" + totalExpend);
+        Row rowMerchandiseTotalSalesInUSD = sheet.createRow(dataRowIndex + datalist.size() + 3);
         Cell rowMerchandiseTotalSalesInUSDCell = rowMerchandiseTotalSalesInUSD.createCell(6);
         rowMerchandiseTotalSalesInUSDCell.setCellType(CellType.STRING);
         rowMerchandiseTotalSalesInUSDCell.setCellValue("Sales in USD");

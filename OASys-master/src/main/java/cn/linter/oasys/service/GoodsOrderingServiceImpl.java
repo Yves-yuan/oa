@@ -32,11 +32,16 @@ public class GoodsOrderingServiceImpl implements GoodsOrderingService {
             "Qty shipped", "Unit Price", "Extended Price"
 //            , "Customer PO#", "Project#", "Shipment date"
     };
+    public static String[] exportExcelColumnNameArr = new String[]{"Item No", "Mftr. Part No ", "Description ",
+            "Qty shipped", "Unit Price", "Extended Price"
+            , "Customer PO#", "Project#", "Shipment date"
+    };
+
     public static String[] dbColumnNameArr = new String[]{"itemNo", "goodsPartNumber", "desc", "qtyShipped",
             "unitPrice", "extendedPrice"
 //            , "customerPo", "project", "shipmentDate"
     };
-    public static String[] excelSimpleImportColumnNameArr = new String[]{"Item No", "Mftr. Part No ", "Qty shipped"};
+    public static String[] excelSimpleImportColumnNameArr = new String[]{"Item No", "Mftr. Part No", "Qty shipped"};
     public static String[] dbSimpleColumnNameArr = new String[]{"itemNo", "goodsPartNumber", "qtyShipped"};
 
     @Autowired
@@ -116,7 +121,7 @@ public class GoodsOrderingServiceImpl implements GoodsOrderingService {
             String dbColumnName = dbColumnNameArr[i];
             for (int j = 0; j < columnNum; j++) {
                 String cellData = (String) ExcelUtils.getCellFormatValue(row.getCell(j));
-                if (excelColumnName.toLowerCase().equals(cellData.toLowerCase())) {
+                if (excelColumnName.equalsIgnoreCase(cellData)) {
                     ecis.add(new ExcelColumnIndex(excelColumnName.toLowerCase(), dbColumnName, j));
                 }
             }
@@ -186,7 +191,7 @@ public class GoodsOrderingServiceImpl implements GoodsOrderingService {
             String dbColumnName = dbSimpleColumnNameArr[i];
             for (int j = 0; j < columnNum; j++) {
                 String cellData = (String) ExcelUtils.getCellFormatValue(row.getCell(j));
-                if (excelColumnName.toLowerCase().equals(cellData.toLowerCase())) {
+                if (cellData.toLowerCase().contains(excelColumnName.toLowerCase())) {
                     ecis.add(new ExcelColumnIndex(excelColumnName.toLowerCase(), dbColumnName, j));
                 }
             }
@@ -292,7 +297,7 @@ public class GoodsOrderingServiceImpl implements GoodsOrderingService {
                 }
             }
             if (totalNumber < packingNumber) {
-                return false;
+                throw new Exception("库存不够");
             }
         }
         for (Map<String, Object> order : list) {

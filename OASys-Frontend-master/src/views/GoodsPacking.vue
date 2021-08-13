@@ -8,11 +8,11 @@
             </el-form-item>
         </el-form>
         <el-card class="box-card" body-style="{padding: '20px' }">
-            <div slot="header" class="clearfix">
-                <span>option</span>
-                <el-button style="float: right; padding: 3px 0" type="text" @click="handleAddGoods(true)">add
-                </el-button>
-            </div>
+<!--            <div slot="header" class="clearfix">-->
+<!--                <span>option</span>-->
+<!--                <el-button style="float: right; padding: 3px 0" type="text" @click="handleAddGoods(true)">add-->
+<!--                </el-button>-->
+<!--            </div>-->
             <el-form label-width="auto"
                      size="small ">
                 <el-row :gutter="24">

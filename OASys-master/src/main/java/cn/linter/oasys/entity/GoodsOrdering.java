@@ -21,12 +21,9 @@ public class GoodsOrdering implements Serializable {
 
     private Double unitPrice;
     private Double extendedPrice;
-    @AnnotationNotExport
     private String customerPo;
-    @AnnotationNotExport
     private String project;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-    @AnnotationNotExport
     private Timestamp shipmentDate;
 
     public int getItemNo() {

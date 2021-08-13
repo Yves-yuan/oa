@@ -67,6 +67,8 @@
                                 })
                                 this.$message.success(response.message)
                                 this.$router.push({name: "index"})
+                            }else{
+                              this.$message.error(response.message)
                             }
                         })
                     }

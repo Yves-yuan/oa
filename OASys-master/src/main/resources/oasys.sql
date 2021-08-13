@@ -246,7 +246,7 @@ CREATE TABLE `goods`  (
   `annual_stock` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `auto_replenish_rate` int,
   `lead_time` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `price` DECIMAL(20,2),
+  `price` DECIMAL(20,4),
   `notes` varchar(255),
   PRIMARY KEY (`id`) USING BTREE,
   INDEX  index_tagid  (tagid)
@@ -272,7 +272,7 @@ CREATE TABLE `goods_bak`  (
   `annual_stock` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `auto_replenish_rate` int,
   `lead_time` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `price` DECIMAL(20,2),
+  `price` DECIMAL(20,4),
   `notes` varchar(255),
   `bak_ts` TIMESTAMP,
   PRIMARY KEY (`id`,`bak_ts`) USING BTREE,

@@ -17,8 +17,7 @@
 
     <insert id="insertGoodsOrderingList" parameterType="java.util.List">
         insert into goods_ordering (itemNo,goodsId,goodsPartNumber,`desc`,qtyShipped,unitPrice,extendedPrice,customerPo,project,shipmentDate)
-        values
-        <foreach collection="list" item="item" index="index" separator=",">
+        values <foreach collection="list" item="item" index="index" separator=",">
             (#{item.itemNo},#{item.goodsId},#{item.goodsPartNumber},#{item.desc},#{item.qtyShipped},
             #{item.unitPrice},#{item.extendedPrice},#{item.customerPo},
             #{item.project},#{item.shipmentDate})

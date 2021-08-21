@@ -126,7 +126,7 @@ public class GoodsOrderingServiceImpl implements GoodsOrderingService {
                 }
             }
         }
-        for (int i = 1; i < rownum; i++) {
+        for (int i = 1; i <= rownum; i++) {
             Map<String, Object> map = new LinkedHashMap<>();
             row = sheet.getRow(i);
             if (row != null) {
@@ -196,7 +196,7 @@ public class GoodsOrderingServiceImpl implements GoodsOrderingService {
                 }
             }
         }
-        for (int i = columnNameRowIndex + 1; i < rownum; i++) {
+        for (int i = columnNameRowIndex + 1; i <= rownum; i++) {
             Map<String, Object> map = new LinkedHashMap<>();
             row = sheet.getRow(i);
             if (row != null) {
